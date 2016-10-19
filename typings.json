@@ -1,8 +1,0 @@
-{
-  "globalDependencies": {
-    "flux": "registry:dt/flux#0.0.0+20160618175531",
-    "meteor": "registry:dt/meteor#1.3.0+20160627161920",
-    "react": "registry:dt/react#0.14.0+20161008064207",
-    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
-  }
-}
