@@ -1,0 +1,34 @@
+require 'rake/clean'
+
+rule '.bc' => '.c' do |t|
+  sh "emcc -O2 -DHASHFILE=\\\"/usr/local/lib/gnushogi/gnushogi.hsh\\\" -funroll-loops -Wall -ansi -pedantic -I. -I.. -c #{t.source} -o #{t.name}"
+end
+
+OBJS = %w(
+  globals.bc
+  init-common.bc
+  pattern-common.bc
+  attacks.bc
+  book.bc
+  commondsp.bc
+  dspwrappers.bc
+  eval.bc
+  genmove.bc
+  init.bc
+  pattern.bc
+  rawdsp.bc
+  search.bc
+  tcontrl.bc
+  util.bc
+  main.bc
+)
+
+CLEAN.include(OBJS)
+
+file 'gnushogi.js' => (OBJS+['pre.js', 'hooklib.js', 'Rakefile']) do |t|
+  white_list = '-s EMTERPRETIFY_WHITELIST=\'["_fgets", "_GetString", "_InputCommand", "_Raw_GetString", "_Raw_PollForInput",  "_PollForInput", "_ElapsedTime", "_poll", "_main"]\''
+
+  sh "emcc -Os -o #{t.name} #{OBJS.join(' ')} -s EMTERPRETIFY=1 -s EMTERPRETIFY_ASYNC=1 -s EMTERPRETIFY_ADVISE=0 -s NO_EXIT_RUNTIME=1 #{white_list} --js-library hooklib.js --pre-js pre.js --embed-file ../misc"
+end
+
+task default: 'gnushogi.js'

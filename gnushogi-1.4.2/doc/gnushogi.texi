@@ -1,0 +1,1834 @@
+\input texinfo   @c -*-texinfo-*-
+
+@c % **  Start of header.
+@setfilename gnushogi.info
+@settitle GNU Shogi manual
+@c % **  End of header.
+
+@dircategory Games
+@direntry
+* gnushogi: (gnushogi).		 Japanese chess
+@end direntry
+
+@setchapternewpage odd
+
+@c ==================================
+@c TeX-specific macros
+@c ==================================
+
+@c None yet!
+
+@c ==================================
+@c info-specific macros
+@c ==================================
+
+@c None yet!
+
+@c ==================================
+@c Summary description and copyright.
+@c ==================================
+
+@ifinfo
+
+This file describes how to use GNU shogi, 
+a program which plays Shogi (Japanese chess).
+
+Copyright (C) 2013 Yann Dirson and the Free Software Foundation, Inc.
+Copyright (C) 1999 Michael C. Vanier and the Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Free Software Foundation.
+
+@end ifinfo
+
+@c =========================================
+@c End of summary description and copyright.
+@c =========================================
+
+
+@c ====================
+@c Title and copyright.
+@c ====================
+
+@titlepage
+@sp 10
+@comment The title is printed in a large font.
+@center @titlefont{GNU Shogi (Japanese chess)}
+@author   Mike Vanier
+
+@c  The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2013-2014 Yann Dirson and the Free Software Foundation
+Copyright @copyright{} 1999 Michael C. Vanier and the Free Software Foundation
+
+@end titlepage
+
+@c ===========================
+@c End of title and copyright.
+@c ===========================
+
+
+@c =========================
+@c Top node and master menu.
+@c =========================
+
+@node    Top, (dir), (dir), (dir)
+@top     GNU Shogi (Japanese chess)
+
+@ifnottex
+@menu
+* Introduction::         What is GNU shogi?
+* About shogi::          General information, rules, etc.
+* gnushogi::             How to play GNU shogi (gnushogi).
+* References and links:: Where to go for more information.
+* Acknowledgements::
+* Bugs::                 Where and how to report bugs.
+* Index::        
+@end menu
+@end ifnottex
+
+@iftex
+This document describes GNU shogi, a program which plays Japanese chess
+(shogi) against a human opponent.
+@end iftex
+
+@c ================================
+@c End of top node and master menu.
+@c ================================
+
+
+@c =====
+@c Body.
+@c =====
+
+@node Introduction, About shogi, Top, Top
+@chapter Introduction
+@cindex Introduction
+
+GNU shogi is a program that plays shogi, the Japanese version of chess,
+against a human (or computer) opponent.  This file describes how to use
+GNU shogi and also gives background information about the game of shogi.
+
+This file describes GNU Shogi version 1.4.1, but most of it was
+written for version 1.3.2 by Mike Vanier
+@email{mvanier@@cs.caltech.edu}, maintainer of GNU shogi at that time.
+
+GNU Shogi is currently maintained by Yann Dirson
+@email{ydirson@@free.fr}.
+
+
+GNU Shogi is actually one program, 'gnushogi', the text-based program
+which also contains the game-playing engine.  By default it will play
+Standard Shogi, but can be built to play Mini Shogi (with GNU Shogi
+1.4.x, you will need to do that explicitely using `./configure
+--enable-minishogi', but 1.5 will make this more straightforward).
+
+Most players will just run GNU Shogi through one of the compatible
+graphical interfaces:
+
+@enumerate
+@item
+@uref{http://repo.or.cz/w/tagua/yd.git, Tagua}, a KDE-based GUI for
+Chess and Shogi. Developement stopped several years ago, and it is
+still somewhat maintained at Debian.  Probably the most sophisticated
+and best-looking free GUI available today.
+
+@item
+@uref{https://alioth.debian.org/projects/omaha/, Omaha}, a generic
+board-game GUI, supporting Shogi and other games, with currently only
+a Gtk2-based UI.  Still under developement, but already usable for
+casual games.
+
+@item
+@uref{https://github.com/pcapriotti/kaya, Kaya}, a small KDE-based GUI
+successor to Tagua, but development of this still young program seem
+to have stalled.
+
+@item
+@uref{http://www.gnu.org/software/xboard/, XBoard/Winboard}, a GUI for
+much more than Shogi, part of the GNU Project.  Patches for GNU Shogi
+to support it are being integrated into the developement version,
+1.4.x and earlier versions cannot talk to it.
+
+@item
+@uref{http://ftp.gnu.org/gnu/gnushogi/, XShogi}, an X-Window graphical
+interface to gnushogi, forked off GNU XBoard years ago, and far from
+today's UI standards. It has barely been maintained recently, while
+XBoard has grown much and is able to play Shogi, and will be soon
+retired.
+
+The GNU Shogi distribution used to contain the 'xshogi' program, In
+future versions, GNU Shogi will be able to use XBoard as a GUI and
+XShogi will be retired.  XShogi is still available as a separate
+source archive on the GNU project FTP server.
+
+@end enumerate
+
+
+Disclaimer: I use the personal pronouns ``him'', ``his'' etc. to refer
+to a shogi player regardless of gender.  That's easier than writing
+``his or her'' all over the place.  I don't mean to infer that women
+don't play shogi; in fact shogi is very popular in Japan among women as
+well as men.
+
+
+@node    About shogi, gnushogi, Introduction, Top
+@chapter About the game of shogi
+     
+
+@quotation
+``Japanese chess cedes nothing in depth or beauty to the European
+game... it is at least as interesting.''
+
+--- Alexander Alekhine @*
+(quoted in David Pritchard, @cite{The Encyclopedia of Chess Variants}) 
+
+``... shogi [is] by far the most complex form of chess that has ever
+achieved widespread popularity.''
+
+--- R. Wayne Schmittberger, @cite{New Rules for Classic Games}
+@end quotation
+
+Shogi is the version of chess played in Japan.  It is strikingly
+different from standard chess (which I shall refer to henceforth as
+``international chess'') and also to all other regional variants,
+because captured pieces can re-enter play on the side of the capturer.
+This has several interesting effects on the play of the game:
+
+@enumerate
+@item
+Shogi is much more complex than international chess, at least in
+terms of the average number of possible moves per turn (estimated at
+about 35 for chess and at about 80 for shogi).
+
+@item
+There are almost no draws (about 1-2% of all games in professional play).
+
+@item
+Exchanges complicate the play rather than simplifying it.
+
+@item
+There are no ``endgames'' in the standard chess sense; all pieces remain
+in play throughout the game.  Games typically end in a race to
+checkmate the other player before being checkmated oneself.
+
+@item
+Ownership of a piece is not indicated by the color of the piece;
+instead, pieces are wedge-shaped and point towards the opponent.  The
+name of the piece is inscribed in Kanji characters on the front of the
+piece.
+
+@item
+Most importantly: it's more fun than other forms of chess :-)
+
+@end enumerate
+
+Shogi is extremely popular in Japan; it has been estimated that 20
+million Japanese can play shogi, of which perhaps 1 million are active
+players.  It is even more popular there than the game of go, Japan's
+other favorite board game.  There are a number of professional players
+who make a considerable amount of money playing in shogi tournaments,
+and the game receives extensive newpaper and television coverage.
+Despite this, the game has yet to become popular outside of Japan.  Part
+of this is because the Kanji characters on the pieces scare away some
+people, but mostly it's due, I think, to lack of exposure to the game
+and to the difficulty of finding opponents.  I hope that GNU shogi will
+help introduce shogi to a wider audience.
+
+@ifnottex
+@menu
+* The rules of shogi::
+* Sample game::
+* Mating problems::
+* Shogi variants::
+* Differences between shogi and chess::
+@end menu
+@end ifnottex
+
+
+@c -------------------------------------------------------
+@c 
+@c The rules of shogi.
+@c
+@c -------------------------------------------------------
+
+@node    The rules of shogi, Sample game, About shogi, About shogi
+@section The rules of shogi
+@cindex  Rules
+
+Shogi is a two-person abstract strategy board game with full information
+(i.e. all pieces and moves are visible to both players at all times).
+It is in the chess family, being descended from the same ancestral game
+as international chess: the Indian game of Chaturanga.  The two players
+are referred to as ``Black'' and ``White'', with Black moving first
+(unlike in international chess, where White moves first), and with
+movement alternating between the two players.  Note that ``Black'' and
+``White'' are just names; the pieces are not colored.  Instead, they are
+flat, wedge-shaped pieces which point towards the opponent.  The
+identity of a given piece is indicated by two Japanese Kanji characters
+on each piece.  In fact, only the top character is needed to identify
+the piece and thus only the top character is used in shogi diagrams.  I
+will use alphabetical equivalents in the diagrams here; to see what the
+Kanji characters look like, start up a graphical interface
+(@pxref{Introduction}) and compare the starting setup there with the
+starting setup in this file (@pxref{The opening setup}).
+
+The object of the game is to capture the opponent's King.  The board is
+a grid of 9x9 uncolored squares, and pieces are placed on the squares.
+Each player begins with 20 pieces, described in the next section.
+Capture is by displacement, as in international chess.
+
+@ifnottex
+@menu
+* The moves of the pieces::
+* The opening setup::
+* Promotion of pieces::
+* Drops::
+* Winning the game::
+* Draws::
+* Handicaps::
+* Notes for chess players::
+@end menu
+@end ifnottex
+
+@c The moves of the pieces.
+
+@node       The moves of the pieces, The opening setup, The rules of shogi, The rules of shogi
+@subsection The moves of the pieces
+@cindex     Piece moves
+
+Each player at the beginning of a shogi game has a total of 20 pieces of
+eight different types.  The moves of the shogi pieces can be divided
+into three classes: ``stepping'' pieces, that only move one square at a
+time; ``ranging'' pieces that move any number of unobstructed squares in
+a line, and ``jumping'' pieces that can jump over obstructing pieces to
+reach their destination squares.  Most pieces can also promote to
+different (usually stronger) pieces under certain circumstances (see the
+next section).  All pieces capture the same way that they move (even
+pawns).  The piece moves and promotions are as follows; each piece name
+is followed by the standard piece abbreviation:
+
+@enumerate
+
+@item
+The king (K).  The king can move one square in any horizontal, vertical,
+or diagonal direction, just like the king in international chess.  The
+king does not promote.
+
+@item
+The rook (R).  The rook can move any number of squares in a horizontal
+or vertical direction.  The rook is the same as the rook in
+international chess (except that it can promote).  A rook promotes to a
+``dragon king'' or ``dragon'' for short (often just referred to as a
+``promoted rook''), which can move as a rook or can move one square in
+any diagonal direction.
+
+@item
+The bishop (B).  The bishop can move any number of squares in a diagonal
+direction.  The bishop is the same as the bishop in international chess
+(except that it can promote).  A bishop promotes to a ``dragon horse''
+or ``horse'' for short (often just referred to as a ``promoted
+bishop''), which can move as a bishop or can move one square in any
+horizontal or vertical direction.  Note: the horse should not be
+confused with a knight (see below), as they are two completely different
+pieces.
+
+@item
+The gold general (G).  A gold general can move one square in any
+horizontal or vertical direction, or one square in a forward diagonal
+direction.  Gold generals do not promote.
+
+@item
+The silver general (S).  A silver general can move one square in any
+diagonal direction, or one square straight forward.  A silver general
+promotes to a gold general.
+
+@item
+The knight (N).  A knight can move one square straight forward followed
+by one square to either forward diagonal, jumping over intervening
+pieces if any.  In other words, a knight moves like its international
+chess counterpart, but forward only.  A knight promotes to a gold
+general.  The knight is the only jumping piece, as in chess.
+
+@item
+The lance (L).  A lance can move any number of squares straight forward.
+A lance promotes to a gold general.
+
+@item
+The pawn (P).  A pawn can move one square straight forward.  The pawn
+captures the same way that it moves, in contrast to international chess.
+There is also no initial two-space move for pawns and no
+@emph{en-passant} capture.  A pawn promotes to a gold general; a
+promoted pawn is usually known as a ``Tokin''.
+
+@end enumerate
+
+
+@c The opening setup.
+
+@node       The opening setup, Promotion of pieces, The moves of the pieces, The rules of shogi
+@subsection The opening setup
+@cindex     Opening setup
+
+The opening setup for shogi is as follows:
+
+@ifnottex
+@verbatim
+   9    8    7    6    5    4    3    2    1
++--------------------------------------------+
+| wL | wN | wS | wG | wK | wG | wS | wN | wL |  a
++--------------------------------------------+
+|    | wR |    |    |    |    |    | wB |    |  b
++--------------------------------------------+
+| wP | wP | wP | wP | wP | wP | wP | wP | wP |  c
++--------------------------------------------+
+|    |    |    |    |    |    |    |    |    |  d
++--------------------------------------------+
+|    |    |    |    |    |    |    |    |    |  e
++--------------------------------------------+
+|    |    |    |    |    |    |    |    |    |  f
++--------------------------------------------+
+| bP | bP | bP | bP | bP | bP | bP | bP | bP |  g
++--------------------------------------------+
+|    | bB |    |    |    |    |    | bR |    |  h
++--------------------------------------------+
+| bL | bN | bS | bG | bK | bG | bS | bN | bL |  i
++--------------------------------------------+
+@end verbatim
+@end ifnottex
+
+@c The following TeX macros are taken with permission from 
+@c "TeX for the Beginner" by Wynter Snow.
+
+@tex
+\def\startline{\par\nobreak\noindent}
+
+{\obeylines\obeyspaces%
+\gdef\beginVerbatim{\bigbreak%
+\begingroup%
+\parskip=0pt%
+\obeylines\obeyspaces%
+\let^^M=\startline%
+\tt}}
+\gdef\endVerbatim{\endgroup\bigbreak}
+\beginVerbatim
+
+
+   9    8    7    6    5    4    3    2    1
++--------------------------------------------+     
+| wL | wN | wS | wG | wK | wG | wS | wN | wL |  a   
++--------------------------------------------+     
+|    | wR |    |    |    |    |    | wB |    |  b   
++--------------------------------------------+     
+| wP | wP | wP | wP | wP | wP | wP | wP | wP |  c   
++--------------------------------------------+     
+|    |    |    |    |    |    |    |    |    |  d   
++--------------------------------------------+     
+|    |    |    |    |    |    |    |    |    |  e   
++--------------------------------------------+     
+|    |    |    |    |    |    |    |    |    |  f   
++--------------------------------------------+     
+| bP | bP | bP | bP | bP | bP | bP | bP | bP |  g   
++--------------------------------------------+     
+|    | bB |    |    |    |    |    | bR |    |  h   
++--------------------------------------------+     
+| bL | bN | bS | bG | bK | bG | bS | bN | bL |  i   
++--------------------------------------------+
+
+\endVerbatim
+@end tex
+
+Here, ``b'' stands for ``black'' and ``w'' stands for ``white'', so
+that, for instance, ``bL'' means ``black lance''.  The numbers above the
+files and the letters to the right of the ranks represent the most
+common notation system used for shogi by westerners (the Japanese also
+use Arabic numerals for the files but use Japanese numerals for the
+ranks).  
+
+
+@c Promotion of pieces.
+
+@node       Promotion of pieces, Drops, The opening setup, The rules of shogi
+@subsection Promotion of pieces
+@cindex     Piece promotion
+
+In sharp contrast to international chess, where only pawns can promote
+to higher-ranked pieces, most of the pieces in shogi can promote.  The
+promoted ranks are discussed in the section on piece moves (@pxref{The
+moves of the pieces}) but are repeated here for reference:
+
+@table @asis
+
+@item Pawn
+promotes to gold general (called a `tokin' in this case only).
+
+@item Lance
+promotes to gold general.
+
+@item Knight
+promotes to gold general.
+
+@item Silver general
+promotes to gold general.
+
+@item Gold general
+does not promote.
+
+@item Bishop
+promotes to ``dragon horse'' or just ``horse'' for short.  The horse can
+move as a bishop or can move one square in any orthogonal direction.
+
+@item Rook
+promotes to ``dragon king'' or just ``dragon'' for short.  The dragon
+can move as a rook or can move one square in any diagonal direction.
+
+@item King
+does not promote.
+
+@end table
+
+The three ranks furthest away from each player constitute his/her
+``promotion zone''.  A player may, but is not required to, promote a
+piece after making a move in which the piece begins and/or ends in the
+promotion zone.  Thus you can promote a piece when moving the piece into
+the promotion zone, out of the promotion zone, or entirely within the
+promotion zone.  Promotion is mandatory in these cases:
+
+@enumerate
+
+@item You must promote a pawn or a lance after moving it to the last rank.
+
+@item You must promote a knight after moving it to either of the last
+two ranks.
+
+@end enumerate
+
+These forced promotions ensure that a piece cannot be moved to a square
+from which it would have no further move.
+
+Pieces ``dropped'' onto the board (@pxref{Drops}) always drop in the
+unpromoted state, even if they drop into the promotion zone.
+
+
+
+@c Drops.
+
+@node       Drops, Winning the game, Promotion of pieces, The rules of shogi
+@subsection Drops
+@cindex     Drops
+
+When a player captures a piece, that piece is not removed from play.
+Instead, it becomes the property of the capturer and can re-enter play
+by being placed on (almost) any vacant square during the player's move.
+This is known as a ``drop'' and counts as a full move (in other words,
+you can either move a piece on the board or drop a piece onto the board
+during your move, but not both).  All pieces drop in the unpromoted
+state.  Pieces may be legally dropped in their promotion zone, but they
+do not promote on that turn.
+
+There are several restrictions on drops:
+
+@enumerate
+
+@item A pawn may not be dropped onto a file if there is already an
+unpromoted pawn belonging to the same player on that file.  It is legal
+to drop a pawn on a file which contains a @emph{promoted} pawn belonging
+to the same player, however.
+
+@item A pawn may not be dropped to give immediate checkmate on the
+move.  A pawn is, however, permitted to be moved on the board to give
+immediate checkmate.  This is a curious rule, and if anyone knows the
+reason for it I would appreciate it if they would contact me and explain
+it to me :-)
+
+@item A pawn or piece may not be dropped onto a square from which they
+would have no legal move.  This means that pawns and lances may not be
+dropped onto the last rank, and the knight may not be dropped onto the
+last or second-to-last rank.
+
+@end enumerate
+
+It is entirely permissible (and often advisable) to drop a piece or pawn
+between one's King and an attacking ranging piece.  For this reason,
+the final checkmating move is nearly always an attack on the King from
+an adjacent square (except for an attack by a Knight).
+
+Captured pieces are said to be pieces ``in hand''.
+
+The drop is the primary distinguishing feature of Japanese chess, shared
+with no other popular chess-type game.  It gives shogi a very aggressive
+quality, and dramatically increases the number of possible moves once a
+few pieces have been captured.  Another interesting feature of shogi is
+that exchanges complicate play rather than simplifying it (as in
+international chess), because of the drop rule.
+
+
+@c Winning.
+
+@node       Winning the game, Draws, Drops, The rules of shogi
+@subsection Winning the game
+@cindex     Winning the game
+
+A game of shogi is won by capturing the opponent's king.  In general,
+this is done by checkmating the king: attacking the king in such a way
+that the king cannot be defended no matter what the defending player
+moves.  Note, though, that there is no rule that requires a player to
+defend a king which is being attacked.  However, if he does not defend
+his king, the opponent is entirely free to capture it on the next move,
+thus winning the game.  As in international chess, in practice most
+games end by resignation when one player realizes that he cannot escape
+checkmate. 
+
+
+@c Draws.
+
+@node       Draws, Handicaps, Winning the game, The rules of shogi
+@subsection Draws
+@cindex     Draws
+
+There are very few draws in shogi; only about 1-2% of professional games
+end in a draw.  One reason for this is that material can never be
+depleted as in chess, because captured pieces are constantly re-entering
+play as a consequence of the drop rule.  In fact, most of the ways a
+game can be drawn in chess are not allowed in shogi:
+
+@itemize @bullet
+
+@item Draws cannot be offered.
+
+@item There is no fifty-move rule.
+
+@item A stalemate counts as a win for the stalemater.  Stated otherwise:
+if you can't move, you lose.
+
+@item Perpetual check is illegal (see below).
+
+@end itemize
+
+There are only two legal ways in which a draw can occur:
+
+@enumerate
+
+@item A position (including the pieces in hand) occurs 4 times with the same
+player to move (called ``Sennichite'').  However, if this is caused by
+consecutive checks (direct attacks on the King, threatening to capture
+it on the next move) by one side, the player giving these checks loses
+the game.  In other words, perpetual check results in a loss for the
+attacker who recreates the same position the 4th time.
+
+@item Both players have moved their King into the the promotion zone (or they
+cannot be prevented from doing so) and the Kings cannot be checkmated.
+A King who has entered the promotion zone is known as an ``entering
+King''; due to the forward orientation of most shogi pieces, it is very
+hard to mate such a King.  In that case the players may decide to count
+their pieces as follows: the King does not count, the Rook and Bishop
+count as 5 points, and all other pieces as one point.  Promotion is
+disregarded.  If both players have at least 24 points the game is a draw
+(called ``Jishogi'').  If a player has less, he loses the game.
+
+Of course, a player can refuse to count pieces when he still has mating
+chances or chances to gain material which would affect the outcome of
+the counting.  There is no strict rule about what to do if this is not
+the case, but nonetheless a player refuses to count up (e.g. because he
+does not have enough points for a draw).  It has been generally accepted
+that in such a case the game ends and the pieces are counted after one
+player has managed to get all his pieces protected in the promotion
+zone.
+
+@end enumerate
+
+@c Handicaps.
+
+@node       Handicaps, Notes for chess players, Draws, The rules of shogi
+@subsection Handicaps
+@cindex     Handicaps
+
+Unlike international chess, shogi has a well-established handicap system
+which is used when players of different strengths play against each
+other.  Handicaps range from small to huge, which makes it possible for
+weak players to play against even very strong players and have an even
+chance of winning.
+
+Shogi players are ranked as follows: the weakest rank is around 15
+``kyu'', which represents a beginner.  14 kyu is higher than 15 kyu, 13
+kyu is higher still, and so on until you get to 1 kyu.  The next highest
+rank is 1 ``dan'', followed by 2 dan, 3 dan and so forth.  The highest
+amateur rank is 6 dan; professionals go up to 9 dan.  However,
+professional ranks are not the same as amateur ranks; a professional 1
+dan is @emph{much} stronger than an amateur 1 dan.  This system is
+similar to that used by go players (and also other Japanese sports such
+as karate).
+
+A handicap consists of the stronger player playing White and removing
+one or more pieces from his side of the board at the start of the game.
+These pieces are permanently removed from play; they are not in hand.
+
+The following is a list of the accepted handicaps, from weakest to
+strongest.  The degree of the handicap, represented by the position in
+the list, represents the difference in rank between the two players for
+which the handicap is appropriate.  These rules are taken from the books
+``Shogi for Beginners'' by John Fairbairn and ``The Art of Shogi'' by
+Tony Hoskings (@pxref{References and links}) and, I believe, represent
+current Japanese practice.
+
+@enumerate
+
+@item 
+The stronger player removes his left lance (on 1a).
+
+@item 
+The players play a two-game match; in the first game the stronger player
+removes his left lance (on 1a), while in the second game he removes his
+bishop.
+
+@item 
+The stronger player removes his bishop.
+
+@item 
+The stronger player removes his rook.
+
+@item 
+The stronger player removes his rook and left lance.
+
+@item 
+The players play a two-game match; in the first game the stronger player
+removes his rook and left lance (on 1a), while in the second game he
+removes his rook and bishop.
+
+@item 
+The stronger player removes his rook and bishop.  This is usually called
+a ``two-piece'' handicap.
+
+@item 
+The stronger player removes his rook, bishop, and both lances.  This is
+called a ``four-piece'' handicap.
+
+@item 
+The stronger player removes his rook, bishop, both lances, and both
+knights.  This is called a ``six-piece'' handicap.
+
+@item 
+The stronger player removes his rook, bishop, both lances, both knights,
+and both silvers.  This is called an ``eight-piece'' handicap.
+
+@end enumerate
+
+Another advantage of playing handicap games is that the handicaps alter
+the optimal strategy for both players.  For instance, handicaps all have
+their own opening lines which may bear little or no resemblance to those
+used in non-handicap shogi.  This means that when learning handicap
+shogi, you are essentially learning completely new games which use the
+same equipment!
+
+The reader may wonder how on earth a player giving an eight-piece
+handicap, say, could possibly hope to win.  Don't forget, though, that
+in shogi the opponent's pieces can be captured and then become part of
+one's own army.  Thus, if the opponent plays badly enough, the number of
+pieces will soon even out.
+
+
+@c Notes for chess players.
+
+@node       Notes for chess players,  , Handicaps, The rules of shogi
+@subsection Notes for chess players
+
+Here are a few miscellaneous things that may confuse chess players.
+Some of these have been mentioned elsewhere, but they bear repeating.
+
+@enumerate
+@item There is no queen.
+
+@item Pawns capture the same way they move.  There is no initial
+two-space pawn move and no @emph{en-passant} move.
+
+@item There is no special castling move.  There @emph{are} a large
+number of possible defensive formations referred to as ``castles''
+(@pxref{Sample game}) but there is no need for special moves to create
+them.
+
+@item A given piece can only promote to @emph{one} other kind of piece.
+
+@end enumerate
+
+@c 
+@c Sample game.
+@c 
+
+@node    Sample game, Mating problems, The rules of shogi, About shogi
+@section Sample game
+@cindex  Sample game
+
+@c This will have to be spruced up for the TeX version...
+
+This game was annotated by Pieter Stouten (@pxref{References and
+links}).  I have made some minor corrections.  Note that captures are
+denoted by the ``x'' symbol e.g. Rx3f and drops are denoted by the ``*''
+symbol e.g. R*3f.  Check is indicated by a ``+'' after the move,
+e.g. R3f+.  I recommend you use a graphical interface to play along with this
+game.  In xshogi simply hit the ``Force Moves'' button after starting
+up, while in gnushogi enter the word ``force'' at the prompt.  This will
+allow you to enter moves for both sides.
+
+Note also that the move numbering system used here is the chess-type
+system where one move means one move by each player.  The Japanese count
+one move made by each player as two moves.
+
+---------------------------------------------------------------------------
+
+Below you will find (the English translation of) an annotated game which
+was published in the Dutch Shogi magazine ``81'' and in the Dutch
+beginners booklet.  It has proven to be a very useful game to explain
+some basic principles of Shogi.  Also, it is a rather straightforward
+game compared to professional games where in most cases very diffuse
+middle game fights take place.
+
+   Pieter Stouten, 14th May 1990.
+
+---------------------------------------------------------------------------
+
+Black: Michael Trent (1-dan).  White: David Murphy (2-dan).
+
+   1. P2f P3d  2. P2e B3c @*
+[ This move is necessary, as otherwise white can exchange pawns: 3. P2d
+Px2d 4. Rx2d.  He would thus get a pawn in hand and open up his rook
+file. ]
+
+   3. P7f P4d @*
+[ White closes the bishop diagonal again.  He plans to play ranging rook
+(the rook goes to 5b, 4b, 3 or 2b; a defensive strategy) and in that
+case he'd better avoid an exchange of bishops.  One of the reasons is
+that he will have problems developing his pieces without leaving holes
+for bishop drops. ]
+
+   4. S4h R3b  5. P3f S4b  6. K6h K6b @*
+[ In general the rook plays an important role in the attacks.  It is
+wise to move the king away from the area where the initial fights will
+be and both players act according to the Shogi proverb ``keep the rook
+and king apart''. ]
+
+   7. K7h K7b  8. P5f P5d  9. G4i-5h G4a-5b @*
+[ Both players use their second gold general to build their castle. ]
+
+   10. S6h @*
+[ In itself this move is not bad.  However, it will become clear that
+black plans a quick attack and in that case it is wiser to omit this
+move. ]
+
+   10... S5c  11. P1f P1d @*
+[ The advance of the edge pawns must be timed very well.  The remark at
+black's tenth move applies here too: this move is good if black wants to
+play a slow game, because it eliminates a future B1e. ]
+
+   12. P4f K8b  13. N3g S7b @*
+[ Black develops his knight in order to start an attack over the second,
+third and fourth files.  White strengthens his king's position and
+awaits the attack.  He aims at a counterattack as soon as black has
+broken through into the white camp.  Probably white's breakthrough will
+take place later, but he has good compensation in the form of a stronger
+castle.  This theme occurs very often in static rook versus ranging rook
+games. ]
+
+   14. P4e R4b @*
+[ Black starts his attack and white puts up a very passive defence.  His
+rook has a hard task now to penetrate the black position.  Moreover, he
+blocks his own bishop.  It seems much better to start a counterattack
+with 14... P3e, later to be followed by B2b, B5a or Bx4d in order to use
+his rook more actively. ]
+
+   15. Px4d Sx4d  16. P*4e S5c @*
+[ 16... Sx4e is more active.  A silver general is normally more valuable
+than a knight, but white gets two pawns in hand and black none, while
+the knight might come in handy for white too. ]
+
+   17. Bx3c+ Nx3c  18. P2d Px2d @*
+[ Black threatens to break through and white has to consider taking the
+pawn on 2d or starting a counterattack with Nx4e.  If he chooses the
+latter, black can play Px2c+ followed by +P3c.  The disadvantage is the
+black ``tokin'' (=promoted pawn) that white will get in his camp; the
+advantage is that it will cost black two more moves to promote his rook.
+Because white did not trust that the result after engaging in a
+``semeai'' (=mutual attack) with 18...Nx4e would give a positive result,
+he captured the pawn on 2d.  Making the right decision in moments like
+this often makes the difference between a win and a loss: miss one
+attacking chance and you will be forced to defend the whole game until
+the unavoidable defeat; on the other hand, an unsound attack can destroy
+all ``aji'' (=potential, meaning possibilities, threats) without getting
+anything in return. ]
+
+   19. Rx2d Nx4e  20. Nx4e Rx4e  21. R2a+ P*4g @*
+[ Now it becomes clear why black's 10. S6h was not good.  Had this move
+been omitted, then white would not have had the time to play 13... S7b
+and after R2a+ the gold on 6a would hang.  Thus black would have kept
+``sente'' (=initiative).  Instead of 21... P*4g, B*6d is a very good
+move, because after 22. P*2h black does not have a pawn in hand anymore
+and he is being threatened with the annoying 22... N*4f 23. G5g N3h+
+24. S4g +N4h also.  Black can also counter 21... B*6d with 22. N*3g.
+White would then reply with 22... R4b 23. B*3c P*4g 24. Bx4b+ Sx4b.  The
+white rook has played its role and instead of spending moves on saving
+it white starts to scatter black's defences by successive pawn drops on
+the fourth file: 25. Gx4g P*4f 26. G5g N*6e 27. G5h P4g+ 28. Gx4g P*4f.
+This analysis was provided by Kato Hifumi, 9-dan professional (the
+highest regular grade).  Destroying the coherence of the enemy pieces
+(their shape) by dropping pawns is one of the most important Shogi
+techniques.  With the actual move 21... P*4g white missed a good
+chance. ]
+
+   22. Sx4g P*4f  23. B*3g Px4g+  24. +Rx6a +Px3g @*
+[ 23. B*3g seems pointless, but a closer look reveals that it is
+actually quite mean.  On move 24 white cannot capture black's ``Ryu''
+(=dragon =promoted rook) with his silver: 24... Sx6a 25. N*7d K7b
+26. G*8b mate.  By attacking the front of the white castle and
+threatening to mate him there, black has the chance to break down the
+white defences from the side. ]
+
+   25. +Rx5b S*6b @*
+[ Here 25... B*4d would be much better, because it is defensive and
+attacking at the same time.  After e.g. 26. G*4c Bx9i+ 27. Gx5c black
+threatens 28. +Rx7b Kx7b 29. S*6a K8b 30. S*7a Kx7a 31. G*7b mate.
+White is one move quicker, however.  He has the following beautiful
+``tsume'' (mating sequence where every move is check): 27... N*8f 28. Px8f
+S*8g 29. Kx8g B*9h 30. K7h Bx8i+ 31. K8g +B8i-8h 32. K9f L*9e mate.
+This illustrates the sharpness of Shogi: one move can make the
+difference between winning and losing. ]
+
+   26. P*4f Rx4f @*
+[ This move eliminates white's last chances.  26... R4b 27. +Rx4b Sx4b
+28. R*4a seems annoying, but after 28... B*3c 29. S7g B*3b white wins
+the rook and with his ``tokin'' on 3g there still is some hope. ]
+
+   27. N*6e +P4g @*
+[ White cannot defend anymore, so he starts a desperate attack.  Black
+does not lose the right track, however. ]
+
+   28. Nx5c+ +Px5h  29. +Nx6b +Px6h  30. Gx6h N*8f  31. Px8f B*6i  32. Gx6i
+   R4h+  33. N*6h +Rx6h  34. Gx6h S*8g  35. Kx8g N*9e  36. K7h Resigns @*
+[ White resigns here, because after 36... B*8g 27. K7g his attack has
+petered out. ]
+
+@page
+
+
+@c 
+@c Mating problems.
+@c 
+
+@node    Mating problems, Shogi variants, Sample game, About shogi
+@section Mating problems
+
+One good way to improve at shogi is to solve mating problems.  There are
+several types of these problems, but the most common is called a
+``tsume-shogi'' problem, or ``tsume'' problem for short.  In a tsume
+problem, all pieces that are not on the board are assumed to be in the
+opponent's hand (except for your King, which is usually not shown).
+Every move you make must be check until the final checkmate.  Your
+opponent may play any piece on the board or drop any of his pieces in
+hand in order to prevent the mate.  In a properly constructed tsume
+problem, all of your pieces on the board and in hand must be essential
+to the solution.  One consequence of this is that all of your pieces in
+hand must be played during the solution.  There should only be one
+correct solution for the given number of moves.  Tsume problems use
+Japanese-style move numbering; thus, a problem where you move (and give
+check), your opponent moves, and you move to give checkmate is called a
+three-mover.  Here is a really trivial three-mover:
+
+@ifnottex
+@verbatim
+   3    2    1
+----------------+
+ |    |    |    |  a
+----------------+
+ |    |    | wK |  b
+----------------+
+ |    |    |    |  c
+----------------+
+ | bN |    |    |  d
+----------------+
+ |    |    |    |  e
+----------------+
+ |    | bN |    |  f
+----------------+
+
+Black in hand: S, G
+@end verbatim
+@end ifnottex
+
+
+@tex
+\def\startline{\par\nobreak\noindent}
+
+{\obeylines\obeyspaces%
+\gdef\beginVerbatim{\bigbreak%
+\begingroup%
+\parskip=0pt%
+\obeylines\obeyspaces%
+\let^^M=\startline%
+\tt}}
+\gdef\endVerbatim{\endgroup\bigbreak}
+\beginVerbatim
+
+   3    2    1            
+----------------+         
+ |    |    |    |  a         
+----------------+           
+ |    |    | wK |  b         
+----------------+           
+ |    |    |    |  c       
+----------------+         
+ | bN |    |    |  d       
+----------------+         
+ |    |    |    |  e       
+----------------+         
+ |    | bN |    |  f       
+----------------+
+     
+Black in hand: 2G
+
+\endVerbatim
+@end tex
+
+Here, Black plays G*2b, White plays K1c, and Black plays G*1d mate.
+More typical tsume problems range from 5 moves to arbitrarily high
+numbers of moves, and they can be quite brain-busting.  Tsume problems
+may seem artificial, but in the closing stages of the game where both
+players have a lot of pieces in hand, it is often necessary to give
+check at every move, or else your opponent will start a counterattack
+and will mate you before you mate him.  A tsume problem is a worst-case
+scenario for the attacker: you have to mate your opponent even though he
+has every piece not on the board in hand, which means you have to
+develop sharp attacking skills.  Many more tsume problems can be found
+on the internet; I particularly recommend Patrick Davin's ``Shogi
+Nexus'' (@pxref{References and links}).
+
+@page
+
+@c 
+@c Shogi variants.
+@c 
+
+@node    Shogi variants, Differences between shogi and chess, Mating problems, About shogi
+@section Shogi variants
+@cindex  Shogi variants
+@cindex  Variants
+@cindex  Tori Shogi
+@cindex  Wa Shogi
+@cindex  Chu Shogi
+@cindex  Dai Shogi
+@cindex  Tenjiku Shogi
+@cindex  Dai-dai Shogi
+@cindex  Maka-dai-dai Shogi
+@cindex  Tai Shogi
+@cindex  Kyoku Tai Shogi
+
+Several historical variants of shogi exist.  Most of these were invented
+before modern shogi (in some cases hundreds of years before), are much
+larger than modern shogi and are not played with drops.  Thus, in many
+ways they are really more like giant chess games than like modern shogi.
+The only one of these games to have survived in Japan is Chu (middle)
+shogi, which is still played a little bit.  Thanks to the efforts of
+George Hodges and John Fairbairn of the Shogi Association (two British
+shogi enthusiasts), these games were resurrected and rules and sets for
+them can still be purchased from George Hodges (@pxref{References and
+links}).  I hope to eventually extend GNU shogi so that it can play at
+least some of these games.  There are also several non-historical
+variants of shogi; I don't know much about them but you can find
+information about them on the internet (@pxref{References and links}).
+
+The historical variants include:
+
+@enumerate
+
+@item
+Tori (bird) shogi, played on a 7x7 board with 32 pieces in all; this is
+the only variant that is known to have been played with drops.
+
+@item
+Wa shogi, played on an 11x11 board with 54 pieces.  This game can be
+played with or without drops but the historical evidence favors the view
+that it was played without drops.  However, most people who have tried
+it claim it is a much better game with drops, being even more intricate
+than standard shogi.
+
+@item
+Chu (middle) shogi, played on a 12x12 board with 92 pieces.  This was
+(and is) by far the most popular of the variants, and has 21 different
+kinds of pieces in the starting line-up alone (along with several others
+that appear upon promotion).  Unlike modern shogi, there are a
+tremendous number of ranging pieces and the game is definitely not
+played with drops.  There is also an amazing piece called the Lion which
+has a double king move and can capture two pieces at once!  Chu shogi
+has a small but fanatical following, some of whom consider it better
+than modern shogi.
+
+@item
+Dai (great) shogi, played on a 15x15 board with 130 pieces.  Other than
+the larger board, this game is very similar to Chu shogi.
+
+@item
+Tenjiku (exotic) shogi, played on a 16x16 board with 176 pieces.  This
+game is possibly the most complex tactical game in existence.  There are
+many astoundingly powerful pieces, including one (the Fire Demon) that
+can capture up to eight opposing pieces in a single move!  Despite the
+size of the game, checkmates can occur very suddenly (and often very
+early on) if one player makes a wrong move.  Tenjiku also has a small
+but fanatical following, one of whom (Colin Adams) has written a book on
+the game which is available for download at
+@uref{http://wayback.archive.org/web/20120717085827/http://www.colina.demon.co.uk/tenjiku.html}.
+
+@item
+Dai-dai (great-great) shogi, played on a 17x17 board with 192 pieces.
+The opening setup alone has 64 different kinds of pieces!  This game and
+the larger ones that follow sound pretty outlandish, but they have
+actually been played; a game of Dai-dai can supposedly be played in
+about 12 hours.
+
+@item
+Maka-dai-dai (great-great-great) shogi, played on a 19x19 board with 192
+pieces.  For those for whom Dai-dai shogi is just too small :-)
+
+@item
+Tai (grand) shogi, played on a 25x25 board with 354 pieces!  Until
+recently, this was thought to be the biggest chess game ever devised,
+but now there is...
+
+@item
+Kyoku tai (extremely grand?) shogi, played on a 36x36 board with 402
+pieces.  The rules for this have just been unearthed in an old Japanese
+book.  Hopefully someone will soon organize a postal Kyoku tai shogi
+championship; maybe their distant ancestors could finish it :-)
+
+It is thought that the really huge games (Dai-dai and up) were never
+really played to any significant extent (gee, wonder why?) and were
+devised merely so that the creators could have the fun of inventing
+enormous games, amazing their friends and confounding their enemies.
+However, the games up to Tenjiku shogi at least appear to be quite
+playable, assuming one has the time.
+
+@end enumerate
+
+Many modern variants have also been devised, usually on small boards,
+and often by western people.  Those include:
+
+@enumerate
+
+@item
+Mini Shogi, played on a 5x5 board with 12 pieces.  Its rules are
+nearly identical to Standard Shogi, and GNU Shogi has some support for
+it.
+
+@item
+Judkins Shogi, similar to Mini Shogi on a 6x6 board.
+
+@item
+Cannon Shogi, played on a 9x9 board, adds pieces inspired by the
+Cannon found in Xiang Qi (chinese chess)
+
+@item
+Sannin Shogi, a 3-player variant on an hexagonal board, with specific
+rules governing alliance between two players
+
+@item
+Kyoto Shogi, Micro Shogi, and several others are much more different.
+
+@end enumerate
+
+@c
+@c Differences between shogi and chess.
+@c
+
+@node    Differences between shogi and chess,  ,  Shogi variants, About shogi
+@section Differences between shogi and chess
+@cindex  Shogi vs. Chess
+
+Some differences between shogi and international chess have been
+mentioned elsewhere in this document; I summarize them here for people
+who are interested in game comparisons.  I won't try to deal with the
+thorny question of which game is ``better'' although my bias may have
+already come through :-) In fact, the drop rule makes the two games so
+different in character that arguing over which game is better is like
+comparing apples to oranges (you'd be better off comparing chess to Chu
+shogi (@pxref{Shogi variants}).  However, I believe that if you are a
+chess fan you'll really like shogi as well, and shogi is also popular
+with many people who don't particularly like chess.
+
+Here are the significant differences between chess and shogi:
+
+@enumerate
+
+@item
+In shogi, captured pieces become the property of the capturer and can
+re-enter play by being dropped onto almost any vacant square.  In chess,
+captured pieces are out of the game.  Thus, in shogi, piece exchanges
+complicate the play significantly while in chess they simplify it.
+
+@item
+The shogi board is 9x9; the chess board is 8x8.
+
+@item
+Shogi has five pieces with no counterpart in chess: the gold and silver
+generals, the lance, the promoted rook and the promoted bishop.  Chess
+has one piece with no counterpart in shogi: the queen.  The knight's
+move in shogi is much more restrictive than in chess.  Pieces in shogi
+generally have a much smaller range of movement than in chess (unless
+they are in hand).
+
+@item
+In shogi, all pieces except the gold general and the king can promote,
+but only to one kind of piece.  Promotion is easier in shogi because the
+promotion zone is closer to the starting position of the pieces
+(especially pawns).  In chess, only the pawn can promote, but it can
+promote to any other piece except the king.
+
+@item
+In shogi, pawns capture the same way they move.  There is no initial
+two-space pawn move and hence no @emph{en-passant} captures.  In chess,
+pawns capture diagonally which means that opposing pawns can block each
+other.
+
+@item
+In shogi, you only have one rook and one bishop.  Note that the bishop
+is not restricted to only one ``color'' square (squares in shogi aren't
+colored, but never mind) because promoted bishops can also move one
+square orthogonally.
+
+@item
+There is no special castling move in shogi.  The term ``castle'' is
+used in shogi to denote a defensive formation consisting of (usually)
+three generals which protect the king.  There are many such castles
+(about 40 or so have names).  @xref{Sample game}.
+
+@item
+Draws are much rarer in shogi than in chess.  Perpetual check is not
+allowed.  Stalemate is a virtual impossibility, and is a loss for the
+stalematee. 
+
+@item
+Since pieces are never out of play in shogi, chess-type endgames
+involving only a few pieces do not occur.
+
+@item
+Shogi games are generally longer than chess games (about 60-70 moves is
+typical).
+
+@item
+Shogi has a well-developed handicap system which is in general use;
+chess does not.
+
+@end enumerate
+
+The effects of all these differences on play include (in my opinion):
+
+@enumerate
+
+@item
+Piece/pawn structures in chess are more rigid than in shogi.  Pawns
+block each other and pawns, once advanced, cannot ever retreat.  In
+shogi, you can repair the hole caused by a pawn advance by exchanging
+the pawn and dropping it back where you want it.  Thus shogi is more
+fluid than chess and less ``structural''.
+
+@item
+Counterattack is MUCH more common in shogi than in chess.  Games
+typically end in mutual mating attacks, where each player is trying to
+checkmate the other player before being checkmated himself.  This makes
+tempo incredibly important and also makes sacrificial play quite common.
+
+@item
+Attacks involving only ranging pieces are more a feature of chess than
+of shogi.  A shogi attack typically uses a ranging piece or pieces to
+support an attack by short-range pieces (especially generals).  It is
+very rare to mate a king with a non-adjacent ranging piece in shogi
+since the player whose king is threatened can almost always interpose by
+dropping a piece.
+
+@end enumerate
+
+
+@c --------------------
+@c gnushogi.
+@c --------------------
+
+@node    gnushogi, References and links, About shogi, Top
+@chapter gnushogi
+@cindex  gnushogi
+
+This section describes how to run the ``gnushogi'' program.
+
+SYNOPSIS
+     
+gnushogi [ [[-]a] [-b bookfile] [-B binbookfile] [-C] [-h langfile] 
+[-L langfile] [-r length] [-R] [-s pathname] [-l pathname] [-S binbooksize]
+[-t] [-c size] [-T size] [-v] [-x] [-X] arg1 arg2 ]
+
+DESCRIPTION
+
+GNU shogi (gnushogi) plays a game of japanese chess (shogi) against the
+user or it plays against itself.
+
+At startup gnushogi reads the binbook file if it is present.  It then
+looks for a book file.  If it is present it adds its contents to the
+binbook data.  If the binbook file is writable a new combined binbook
+file is written.
+
+Gnushogi is a modified version of the gnuchess program.  It has a simple
+alphanumeric board display, or it can be used with the xshogi program
+under X windows.  The program gets its opening moves from the file
+gnushogi.bbk which is located in a directory specified in the Makefile.
+To invoke the program type:
+
+@table @samp
+
+@item  gnushogi -C
+simple curses based version
+
+@item  gnushogi -X (or just gnushogi)
+xshogi compatible version
+
+@item gnushogi -R
+raw test display version
+@end table
+
+TIME CONTROLS
+
+If one argument is given, it is the search time per move in
+[minutes:]seconds.  So gnushogi 30 will generate one move every 30
+seconds, while gnushogi 5:00 will generate one move every 5 minutes.
+
+If two or more arguments are given, they will be used to set tournament
+time controls with the first argument of each pair being the number of
+moves and the second being the total clock time in minutes[:seconds].
+Thus, entering gnushogi 60 5 will set the clocks for 5 minutes (300
+seconds) for the first 60 moves, and gnushogi 30 3:30 will allow 3
+minutes and 30 seconds for 30 moves.
+
+gnushogi 30 5 1 :30 will allow 5 minutes for the first 30 moves and 30
+seconds for each move after that.  Up to 4 pairs of controls may be
+specified.
+
+If no argument is given the program will prompt the user for level of
+play.
+
+@page
+
+BOOK
+
+The book gnushogi.tbk consists of a sequence of openings.  An opening
+begins with a line starting with a # (the rest of the line is a comment).
+Following this is a series of moves in algebraic notation alternating
+between black and white separated by whitespace.  A move may have a ?
+after it indicating this move should never be made in this position.  Moves
+are stored as position:move so transpositions between openings can take
+place.
+
+HASHFILE
+
+The hashfile if created should be on the order of 4 megabytes; you can
+create such a hashfile by typing ``gnushogi -c 22'' (see below).  This
+file contains positions and moves learned from previous games.  If a
+hashfile is used the computer makes use of the experience it gained in
+past games.  Tests run so far show that it plays no worse with the
+hashfile than without, but it is not clear yet whether it provides a
+real advantage.
+
+LEGAL MOVES
+
+Note: Piece letters are determined by the language file.  What is
+specified here is the default (English).
+
+Once gnushogi is invoked, the program will display the board and prompt
+the user for a move.  To enter a move, use the notation 7g7f where the
+first letter-number pair indicates the origin square and the second
+letter-number pair indicates the destination square.  An alternative is
+to use the notation P7f where the first letter indicates the piece type
+(P,L,N,S,G,B,R,K).  To promote append a + the type of the new piece to
+the move, as in 2d2c+ or P2c+. Note that you must use capital letters
+for the pieces by default.
+
+COMMAND-LINE OPTIONS
+
+@table @samp
+
+@item -a
+Do not search on opponent's time.
+
+@item a
+Do search on opponent's time.
+
+@item -b @var{bookfile}
+Use bookfile for opening book.
+
+@item -B @var{binbookfile}
+Use binbookfile for binary opening book.
+
+@item -c @var{size}          
+Create a new HASHFILE.  File size is 2^size entries of approximately 65+?
+bytes.
+
+@item -C
+Use curses-based display mode.
+
+@item -h   
+Do not use hashfile.
+
+@item h    
+Do use hashfile.
+
+@item -l @var{pathname}
+Pathname of the loadfile used with get or xget.
+
+@item -L @var{lang}
+Use language lang from the file gnushogi.lang.  If -L is not specified
+it uses the first language in the file.
+
+@item  -P @var{plylevels}
+Number of plys to include in the binbookfile.  For generating a
+binbookfile.
+
+@item  -r @var{length}
+Rehash @emph{length} times in searching entries for position in
+transposition table.
+
+@item  -R  
+Use raw text display mode.  This can be used for dumb terminals or for
+systems that don't have curses.
+
+@item  -s @var{pathname}
+Pathname of the save file to use with the save command.
+
+@item  -S @var{size}
+Size of binbookfile for memory based books.  For creating a binbookfile.
+
+@item  -t   
+Show statistics for HASHFILE.
+
+@item  -T @var{size}
+Set the transposition table size to 2^size entries.
+
+@item  -v   
+Show version and patchlevel.
+
+@item  -x @var{value}
+Use value as the evaluation window xwndw.
+
+@item  -X   
+Use xshogi display mode (the default).
+
+@end table
+
+
+COMMANDS
+
+In addition to legal moves, the following commands can be entered at the
+gnushogi prompt.  Note: command names are determined by the language
+file and may vary with the implementation.  The default language is
+English.
+
+@table @samp
+
+@item alg
+allow algebraic input (not implemented).
+
+@item Awindow 
+change Alpha window (default score + 90).
+
+@item Bwindow 
+change Beta window (default score - 90).
+
+@item beep 
+toggles beeping after each move (default: on).
+
+@item bd 
+updates the current board position on the display.
+
+@item book 
+turns off use of the opening library.
+
+@item both 
+causes the computer to play both sides of a shogi game.
+
+@item black 
+causes the computer to play as White, if the computer was to move
+first.
+
+@item bsave 
+saves a game to disk as a book textfile.  The program will prompt the
+user for a file name.
+
+@item gamein 
+toggles game mode time control.  Assumes the time specified for time
+control is the time for a complete game.  Input with the level command
+should be the game time and the expected number of moves in a game.  go
+command must be given.
+
+@item coords 
+show coordinates on the display (visual only).
+
+@item contempt 
+allows the value of @emph{contempt} to be modified.
+
+@item debug 
+asks for a piece as color piece, as wb or bn, and shows its calculated
+value on each square.
+
+@item debuglevel 
+sets level of debugging output if compiled with debug options.
+
+@item depth 
+allows the user to change the search depth of the program.  The maximum
+depth is 29 ply.  Normally the depth is set to 29 and the computer
+terminates its search based on elapsed time rather than depth.  If depth
+is set to (say) 4 ply, the program will search until all moves have been
+examined to a depth of 4 ply (with extensions up to 11 additional ply
+for sequences of checks and captures).  If you set a maximum time per
+move and also use the depth command, the search will stop at the
+specified time or the specified depth, whichever comes first.
+
+@item easy 
+toggles easy mode (thinking on opponents time) on and off. The default
+is easy mode ON.  If easy mode is disabled, the keyboard is polled for
+input every so often and when input is seen the search is terminated. It
+may also be terminated with a sigint.
+
+@item edit 
+allows the user to set up a board position.
+@itemize @minus
+
+@item #    
+clear the board.
+
+@item c
+toggle piece color.
+
+@item .
+command will exit setup mode.
+
+@item p3b
+place a pawn on 3b
+
+@item p3b+
+place a promoted pawn on 3b
+
+@item p*
+place a pawn in hand (among the captured pieces)
+
+@end itemize
+
+Pieces are entered by typing a letter (p,l,n,s,g,b,r,k)  for
+the piece followed by the coordinate.  Here, letter case is ignored.
+
+The usual warning about the language file applies.
+
+@item exit 
+exits gnushogi.
+
+@item first 
+tells the computer to move first.  Computer begins searching for a move.
+(same as ``go'').
+
+@item force 
+allows the user to enter moves for both sides.  To get the program to
+play after a sequence of moves has been entered use the ``black'' or
+``white'' commands.
+
+@item get 
+retrieves a game from disk.  The program will prompt the user for a file
+name.
+
+@item go 
+tells the computer to move first.  Computer begins searching for a move.
+(same as ``first'').
+
+@item hash 
+use/don't use hashfile.
+
+@item hashdepth 
+allows the user to change the minimum depth for using the hashfile and
+the number of moves from the beginning of the game to use it.
+
+@item help 
+displays a short description of the commands and the current status of
+options.
+
+@item hint 
+causes the program to supply the user with its predicted move.
+
+@item level 
+allows the user to set time controls such as 60 moves in 5 minutes etc.
+In tournament mode, the program will vary the time it takes for each
+move depending on the situation.  If easy mode is disabled (using the
+``easy'' command), the program will often respond with its move
+immediately, saving time on its clock for use later on.
+
+@item list 
+writes the game moves and some statistics on search depth, nodes, and
+time to the file ``shogi.lst''.
+
+@item material 
+toggle material flag - draws on no pawns and both sides < rook.
+
+@item new 
+starts a new game.
+
+@item p 
+evaluates the board and shows the point score for each piece.  The total
+score for a position is the sum of these individual piece scores.
+
+@item post 
+causes the program to display the principal variation and the score
+during the search.  A score of 100 is equivalent to a 1 pawn advantage
+for the computer.
+
+@item quit 
+exits the game.
+
+@item random 
+causes the program to randomize its move selection slightly.
+
+@item rcptr 
+set recapture mode.
+
+@item remove 
+backout the last level for both sides.  Equal to 2 undo's.
+
+@item reverse 
+causes the board display to be reversed.  That is, the Black's pieces will
+now appear at the top of the board.
+
+@item rv 
+reverse board display.
+
+@item save 
+saves a game to disk.  The program will prompt the user for a file name.
+
+@item switch 
+causes the program to switch places with the opponent and begin
+searching.
+
+@item test 
+performs some speed tests for MoveList and CaptureList generation, and
+ScorePosition position scoring for the current board.
+
+@item time 
+set computer's time remaining, intended for synchronizing clocks among
+multiple players.
+
+@item tsume 
+toggle tsume mode. In tsume mode, not all possible moves will be
+generated. If a king is in check, only moves that get the king out of
+check are generated.  If the king is not in check, only moves that give
+check to the opponent's king are generated.
+
+@item undo 
+undoes the last move whether it was the computer's or the human's.  You
+may also type ``remove''.  This is equivalent to two ``undo'''s
+(e.g. retract one move for each side).
+
+@item white 
+causes the computer to play as Black; if the computer is to move
+first the go command must be given.
+
+@item xget 
+read an xshogi position file.
+
+@item xsave 
+save as an xshogi position file.
+
+@item xwndw 
+change X window. The window around alpha/beta used to determine whether
+the position should be scored or just estimated.  Note: this has
+@emph{nothing} to do with xshogi or X windows; the terms are completely
+separate.
+
+@end table
+
+
+@c ---------------------
+@c References and links.
+@c ---------------------
+
+@node    References and links, Acknowledgements, gnushogi, Top
+@chapter References and links
+@cindex  References
+@cindex  Books
+@cindex  Mailing lists
+@cindex  Web sites
+
+
+There are very few English-language books for people learning shogi.
+The two I recommend are:
+
+@enumerate
+
+@item
+@cite{Shogi for Beginners, 2nd. Edition}, by John Fairbairn.  This is a
+superb beginner's book in every way, covering all phases of the game.
+It was out of print for a long time, but has now been reprinted and is
+available either from Kiseido (@uref{http://www.labnet.or.jp/~kiseido})
+or from George Hodges (see below).
+
+@item
+@cite{The Art of Shogi}, by Tony Hoskings.  This is one step up from the
+Fairbairn book.  It covers a lot of ground, and is especially noteworthy
+for its detailed treatment of opening lines.  You can order this book
+from Amazon.com's UK branch (@uref{http://www.amazon.co.uk}).
+
+@end enumerate
+
+Another book you may find is @cite{Shogi: Japan's Game of Strategy} by
+Trevor Leggett.  This book is very elementary and is somewhat outdated,
+having been published first in 1966.  However, it does feature a paper
+shogi board and punch-out pieces, so if you want a really cheap shogi
+set you might pick this book up.  It is still in print.
+
+Two books that are no longer in print but are definitely worth getting
+if you find them are @cite{Guide to Shogi Openings} and @cite{Better
+Moves for Better Shogi}, both by Aono Teriuchi.  They are published in a
+bilingual edition (English/Japanese) and are the only books on shogi in
+English written by a Japanese professional shogi player.  John Fairbairn
+did the translation from Japanese to English.
+
+Shogi sets are available from:
+
+@quotation
+George F. Hodges @*
+P.O. Box 77 @*
+Bromley, Kent @*
+United Kingdom BR1 2WT
+@end quotation
+
+George also sells equipment for all the historical shogi variants
+(@pxref{Shogi variants}) (except for Kyoku tai shogi) and also sells
+back issues of the magazine ``Shogi'' which he published for 70 issues
+in the late 70's to late 80's.  This magazine is STRONGLY recommended;
+it contains more information about shogi in English than you will ever
+find anywhere else.
+
+Here are some useful URLs:
+
+@table @asis
+
+@item Pieter Stouten's shogi page: @uref{http://www.shogi.net}
+This is the main shogi-related site on the internet, with links to
+almost all the other sites.
+
+@item Roger Hare's shogi page: @uref{http://www.ed.ac.uk/~rjhare/shogi}
+This has lots of information, including full rules to most of the shogi
+variants.
+
+@item Patrick Davin's Shogi Nexus: @uref{http://www.vega.or.jp/~patrick/shogi/}
+There's lots of cool stuff on this site; my favorite is the extensive
+collection of Tsume-shogi (mating) problems, both for beginners and
+more advanced players.
+
+@item Steve Evans' shogi page: @uref{http://www.netspace.net.au/~trout/index.html} 
+Steve has written a program that plays almost all of the shogi variants,
+unfortunately it only runs on Windows :-(
+
+@item Hans Bodlaender's chess variant pages: @uref{http://www.cs.ruu.nl/~hansb/d.chessvar}
+This page has an almost unimaginable variety of rules for different
+chess variants, including many shogi variants (historical and non-historical).
+
+@item Wikipedia's shogi variant pages: @uref{http://en.wikipedia.org/wiki/Category:Shogi_variants}
+Those pages contain a large number of variant rules, both ancient and
+modern.
+
+@end table
+
+@c -----------------
+@c Acknowledgements.
+@c -----------------
+
+@node    Acknowledgements, Bugs, References and links, Top
+@chapter Acknowledgements
+@cindex  Acknowledgements
+
+I would like to thank the following people:
+
+@itemize @bullet
+
+@item
+Matthias Mutz, who originally developed GNU shogi as a spin-off of GNU
+chess and who very kindly let me take over the maintenance of this very
+interesting project.
+
+@item
+Richard Stallman and the Free Software Foundation, for creating an
+organization where anyone can contribute software for the common good of
+all, for making GNU/Linux possible, and especially for writing emacs and
+gcc, without which my working life would be intolerable.
+
+@item
+Georges Hodges, for starting the Shogi Association in England, without
+which I would probably never have heard of shogi, for supplying shogi
+equipment, for publishing the excellent magazine ``Shogi'' (now sadly
+defunct), for personally answering all my silly questions by mail, and
+for being the ambassador of shogi to the West.
+
+@item
+Pieter Stouten, for having the most comprehensive shogi site on the
+World Wide Web (@uref{http://www.shogi.net}), and for
+maintaining the shogi-l mailing list.  Go to Pieter's web site for more
+information on subscribing to the list.  Also thanks to everyone who
+contributes and has contributed to that list.
+
+@item
+Matt Casters, for testing GNU shogi.  Matt and I will be working
+together on improving the solution engine in future versions of this
+program.
+
+@end itemize
+
+@c -----
+@c Bugs.
+@c -----
+
+@node    Bugs, Index, Acknowledgements, Top
+@chapter Bugs
+
+The motto of GNU shogi is ``100% bug-free or you don't pay!'' :-) In
+the extremely unlikely case (*ahem*) that you do find a bug, please
+report it to the bug tracker at
+@uref{https://savannah.gnu.org/projects/gnushogi/}.  Also, feel free
+to post comments, complaints, out-and-out raves, suggestions and such
+to one of the mailing lists at
+@uref{https://savannah.gnu.org/mail/?group=gnushogi}.
+
+
+@c ============
+@c End of body.
+@c ============
+
+
+
+@c ====
+@c End.
+@c ====
+
+@node    Index,  , Bugs, Top
+@chapter Index
+
+@printindex cp
+
+@contents
+
+@bye
+
+
