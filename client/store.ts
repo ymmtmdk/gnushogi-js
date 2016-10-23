@@ -5,7 +5,6 @@ import {KomaData} from './komadata';
 import {Engine} from './engine';
 import {EventTypes} from './eventtypes';
 import {Position} from './position';
-import {p} from './p'
 
 enum State {
   Normal = 1,
@@ -15,33 +14,35 @@ enum State {
 
 class Store_ {
   readonly eventEmmiter: EventEmitter;
-  onReadyHandler;
   private state: State;
-  private selected: KomaData;
-  private promotingPos: Position;
+  private selected?: KomaData;
+  private promotingPos?: Position;
 
   constructor() {
     this.onUpdateHandler = this.onUpdateHandler.bind(this);
     this.eventEmmiter = new EventEmitter();
-    this.selected = null;
+    this.selected = undefined;
     this.state = State.Normal;
   }
 
   start(): void {
     Engine.onUpdateHandler = this.onUpdateHandler;
-    Engine.onReadyHandler = this.onReadyHandler;
     Engine.start();
   }
 
-  private toNormal(){
-    this.selected = null;
-    this.promotingPos = null;
+  private toNormal(): void {
+    this.selected = undefined;
+    this.promotingPos = undefined;
     this.eventEmmiter.emit(EventTypes.Select, { selected: null });
     this.eventEmmiter.emit(EventTypes.Promote, { promoting: null });
     this.state = State.Normal;
   }
 
-  private onMoving(pos): void {
+  private onMoving(pos: Position): void {
+    if (!this.selected){
+      return;
+    }
+
     if (this.selected.canPromote(pos.file)) {
       this.promotingPos = new Position(pos.rank, pos.file);
       this.eventEmmiter.emit(EventTypes.Promote, { promoting: {koma: this.selected, pos: this.promotingPos}});
@@ -52,7 +53,7 @@ class Store_ {
     }
   }
 
-  komaClick(koma): void {
+  komaClick(koma: KomaData): void {
     if (!Engine.canMove()){
       return;
     }
@@ -70,7 +71,7 @@ class Store_ {
     }
   }
 
-  masuClick(pos): void {
+  masuClick(pos: Position): void {
     if (this.state === State.Moving) {
       this.onMoving(pos);
     } else if (this.state === State.Promoting) {
@@ -78,8 +79,8 @@ class Store_ {
     }
   }
 
-  promSelect(koma, isProm): void {
-    if (this.state === State.Promoting) {
+  promSelect(isProm: boolean): void {
+    if (this.selected && this.promotingPos && this.state === State.Promoting) {
       Engine.move(this.selected, this.promotingPos.rank, this.promotingPos.file, isProm);
     }
     this.toNormal();

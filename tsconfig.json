@@ -1,16 +1,44 @@
 {
   "compilerOptions": {
-    "target": "es6",
     "module": "commonjs",
-    "isolatedModules": false,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
+    "target": "es5",
+    "declaration": true,
+    "lib": [
+      "dom",
+      "es2017"
+    ],
+    "types": [
+      "node"
+    ],
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitUseStrict": false,
     "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "traceResolution": false,
+    "listFiles": false,
+    "stripInternal": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": false,
+    "pretty": false,
+    "noEmitOnError": false,
+
     "removeComments": false,
-    "noImplicitAny": false,
     "sourceMap": true,
     "jsx": "react"
   },
+
+  "include": [
+    "client/**/*.ts",
+    "typings/**/*.ts"
+  ],
 
   "exclude": [
     "node_modules"

@@ -1,14 +1,15 @@
 import {Position} from './position';
+import {Role} from './role';
 
 export class KomaData{
   readonly id: number;
-  readonly role: string;
+  readonly role: Role;
   isWhite: boolean;
   isProm: boolean;
   isHand: boolean;
   pos: Position;
 
-  constructor(id, rank, file, role, isWhite, isProm, isHand) {
+  constructor(id: number, rank: number, file: number, role: Role, isWhite: boolean, isProm: boolean, isHand: boolean) {
     this.id = id;
     this.role = role;
     this.isWhite = isWhite;
@@ -17,7 +18,7 @@ export class KomaData{
     this.pos = new Position(rank, file);
   }
 
-  canPromote(file): boolean {
+  canPromote(file: number): boolean {
     if (this.isProm || this.isHand || this.role === 'ou' || this.role === 'kin') {
       return false;
     }
@@ -28,7 +29,7 @@ export class KomaData{
     }
   }
 
-  setPos(rank, file): void {
+  setPos(rank: number, file: number): void {
     this.pos = new Position(rank, file);
   }
 }

@@ -6,25 +6,28 @@ import {Constants as C} from './constants';
 import {ActionTypes} from './actiontypes';
 import {EventTypes} from './eventtypes';
 import {KomaData} from './komadata';
+import {Role} from './role';
 import {Store} from './store';
 import {Dispatcher} from './dispatcher';
 import {Position} from './position';
 
-class PromSelect extends React.Component<{}, {}> {
-  readonly props;
+interface PromSelectProps {
+  readonly koma: KomaData;
+  readonly pos: Position;
+}
 
-  private promote(isProm) {
-    return (e)=>{
+class PromSelect extends React.Component<PromSelectProps, {}> {
+  private promote(isProm: boolean) {
+    return (e: React.MouseEvent)=>{
       Dispatcher.dispatch({
         actionType: ActionTypes.PromSelect,
-        koma: this.props.koma,
         isProm: isProm,
       });
       e.stopPropagation();
     };
   }
 
-  private style(isProm) {
+  private style(isProm: boolean) {
     return {
       position: 'absolute',
       left: this.props.pos.off_x + (isProm ? 1 : -1) * C.MASU_W/2,
@@ -50,8 +53,14 @@ class PromSelect extends React.Component<{}, {}> {
   }
 }
 
-class Koma extends React.Component<{}, {}> {
-  readonly props;
+interface KomaProps{
+  readonly koma: KomaData;
+  readonly pos: Position;
+  readonly img: string;
+}
+
+class Koma extends React.Component<KomaProps, {}> {
+  // readonly props;
 
   private style() {
     return {
@@ -66,7 +75,7 @@ class Koma extends React.Component<{}, {}> {
     };
   }
 
-  onClick(e) {
+  onClick(e: React.MouseEvent): void {
     Dispatcher.dispatch({
       actionType: ActionTypes.KomaClick,
       koma: this.props.koma,
@@ -82,9 +91,12 @@ class Koma extends React.Component<{}, {}> {
   }
 }
 
-class Tile extends React.Component<{}, {}> {
-  readonly props;
+interface TileProps{
+  readonly pos: Position;
+  readonly color: string;
+}
 
+class Tile extends React.Component<TileProps, {}> {
   private style() {
     return {
       position: 'absolute',
@@ -103,19 +115,19 @@ class Tile extends React.Component<{}, {}> {
   }
 }
 
-class Ban extends React.Component<{}, {}> {
-  readonly props;
-  state: {komas: KomaData[]
-    selected: KomaData,
-    promoting: {koma: KomaData, pos:Position},
-  };
+interface BanState{
+    komas: KomaData[];
+    selected?: KomaData;
+    promoting?: {koma: KomaData, pos:Position};
+}
 
-  constructor(props) {
+class Ban extends React.Component<{}, BanState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       komas: [],
-      selected: null,
-      promoting: null
+      selected: undefined,
+      promoting: undefined
     };
   }
 
@@ -142,8 +154,8 @@ class Ban extends React.Component<{}, {}> {
     this.events().forEach((o)=> Store.eventEmmiter.removeListener(o.name, o.handler));
   }
 
-  onClick(e) {
-    const rect = document.getElementById('ban').getBoundingClientRect();
+  onClick(e: React.MouseEvent) {
+    const rect = document.getElementById('ban')!.getBoundingClientRect();
     const left = rect.left + window.pageXOffset;
     const top = rect.top + window.pageYOffset;
     const pos = Position.from_offsets(e.pageX - left, e.pageY - top);
@@ -154,15 +166,12 @@ class Ban extends React.Component<{}, {}> {
   }
 
   render() {
-    const handsPosWhite = Util.handsPos(this.state.komas, true);
-    const handsPosBlack = Util.handsPos(this.state.komas, false);
     const pos = (koma: KomaData)=>{
       if (koma.isHand){
+        const o = Util.handsPos(this.state.komas, koma);
         if (koma.isWhite){
-          const o = handsPosWhite[koma.id];
           return new Position(-1-o.x, o.y);
         } else{
-          const o = handsPosBlack[koma.id];
           return new Position(11+o.x, 10-o.y);
         }
       } else{
@@ -182,59 +191,58 @@ class Ban extends React.Component<{}, {}> {
       ? (<Tile color="black" pos={pos(this.state.selected)}/>)
       : null;
 
-    const prom = this.state.promoting
-      ? (<PromSelect pos={this.state.promoting.pos} koma={this.state.promoting.koma}/>)
-      : null;
+      const prom = this.state.promoting
+        ? (<PromSelect pos={this.state.promoting.pos} koma={this.state.promoting.koma}/>)
+        : null;
 
-    const abs = {position: "absolute"};
-    return (
-      <div id='ban' style={this.style()} onClick={this.onClick}>
-      <img src='img/ban/ban_kaya_a.png' style={abs}/>
-      <img src='img/masu/masu_nodot.png' style={abs}/>
-      {tile}
-      {komas}
-      {prom}
-      </div>);
+        const abs = {position: "absolute"};
+        return (
+          <div id='ban' style={this.style()} onClick={this.onClick}>
+          <img src='img/ban/ban_kaya_a.png' style={abs}/>
+          <img src='img/masu/masu_nodot.png' style={abs}/>
+          {tile}
+          {komas}
+          {prom}
+          </div>);
   }
 }
 
 class Util{
-  static image_src(role, isWhite, isProm): string{
+  static image_src(role: Role, isWhite: boolean, isProm: boolean): string{
     const sg = isWhite ? 'go_' : 'sen_';
     const n = isProm ? 'nari_' : '';
     return `img/koma/${sg}${n}${role}.png`;
   }
 
-  static handsPos(komas, isWhite){
-    const order = (role)=>(
+  static handsPos(komas: KomaData[], koma:KomaData): {y:number,x:number}{
+    const order = (role: Role)=>(
       ["ou", "hi", "kaku", "kin", "gin", "kei", "kyo", "fu"].findIndex((e)=>e==role)
     );
 
-    const hand = komas.filter((koma)=>(
-      koma.isHand && koma.isWhite == isWhite
-    )).sort((a, b)=>(order(a.role) < order(b.role)));
+    const hand = komas.filter((km)=>(
+      km.isHand && km.isWhite == koma.isWhite
+    )).sort((a, b)=>(order(a.role) - order(b.role)));
 
-    let pos = {};
-    let roleIdx = {};
-    let idx = 0;
-    hand.forEach((koma)=>{
-      if (!roleIdx[koma.role]){
-        roleIdx[koma.role] = 0;
-        idx += 1;
+    let y = 0;
+    let x = 0;
+    let currnetRole: string | undefined = undefined;
+    hand.some((km)=>{
+      if (currnetRole != km.role){
+        y += 1;
+        x = 0;
+        currnetRole = km.role;
       }
-      roleIdx[koma.role] += 1;
-      pos[koma.id] = {y: idx, x: roleIdx[koma.role]};
+      x += 1;
+      return km.id == koma.id;
     });
 
-    return pos;
+    return {x: x, y: y};
   }
 }
 
 const main = ()=> {
-  Store.onReadyHandler = ()=>{
-    render(<Ban />, document.getElementById("root"));
-  };
   Store.start();
+  render(<Ban />, document.getElementById("root")!);
 }
 
-main();
+document.addEventListener('DOMContentLoaded', main);

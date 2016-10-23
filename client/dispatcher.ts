@@ -11,7 +11,7 @@ dispatcher.register(function(payload) {
     case ActionTypes.MasuClick:
       return Store.masuClick(payload.pos);
     case ActionTypes.PromSelect:
-      return Store.promSelect(payload.koma, payload.isProm);
+      return Store.promSelect(payload.isProm);
   }
 });
 
