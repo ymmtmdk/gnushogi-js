@@ -45,26 +45,34 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const React = __webpack_require__(1);
-	const react_dom_1 = __webpack_require__(34);
-	const constants_1 = __webpack_require__(172);
-	const actiontypes_1 = __webpack_require__(173);
-	const eventtypes_1 = __webpack_require__(174);
-	const store_1 = __webpack_require__(175);
-	const dispatcher_1 = __webpack_require__(181);
-	const position_1 = __webpack_require__(179);
-	class PromSelect extends React.Component {
-	    promote(isProm) {
-	        return (e) => {
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var react_dom_1 = __webpack_require__(34);
+	var constants_1 = __webpack_require__(172);
+	var actiontypes_1 = __webpack_require__(173);
+	var eventtypes_1 = __webpack_require__(174);
+	var store_1 = __webpack_require__(175);
+	var dispatcher_1 = __webpack_require__(182);
+	var position_1 = __webpack_require__(179);
+	var PromSelect = (function (_super) {
+	    __extends(PromSelect, _super);
+	    function PromSelect() {
+	        _super.apply(this, arguments);
+	    }
+	    PromSelect.prototype.promote = function (isProm) {
+	        return function (e) {
 	            dispatcher_1.Dispatcher.dispatch({
 	                actionType: actiontypes_1.ActionTypes.PromSelect,
-	                koma: this.props.koma,
 	                isProm: isProm,
 	            });
 	            e.stopPropagation();
 	        };
-	    }
-	    style(isProm) {
+	    };
+	    PromSelect.prototype.style = function (isProm) {
 	        return {
 	            position: 'absolute',
 	            left: this.props.pos.off_x + (isProm ? 1 : -1) * constants_1.Constants.MASU_W / 2,
@@ -74,9 +82,9 @@
 	            backgroundColor: "blue",
 	            opacity: 0.7,
 	        };
-	    }
-	    render() {
-	        const koma = this.props.koma;
+	    };
+	    PromSelect.prototype.render = function () {
+	        var koma = this.props.koma;
 	        return (React.createElement("div", null, 
 	            React.createElement("div", {onClick: this.promote(true), style: this.style(true)}, 
 	                React.createElement("img", {src: Util.image_src(koma.role, koma.isWhite, true)})
@@ -84,10 +92,16 @@
 	            React.createElement("div", {onClick: this.promote(false), style: this.style(false)}, 
 	                React.createElement("img", {src: Util.image_src(koma.role, koma.isWhite, false)})
 	            )));
+	    };
+	    return PromSelect;
+	}(React.Component));
+	var Koma = (function (_super) {
+	    __extends(Koma, _super);
+	    function Koma() {
+	        _super.apply(this, arguments);
 	    }
-	}
-	class Koma extends React.Component {
-	    style() {
+	    // readonly props;
+	    Koma.prototype.style = function () {
 	        return {
 	            position: 'absolute',
 	            left: this.props.pos.off_x,
@@ -98,22 +112,27 @@
 	            transitionDuration: '0.3s',
 	            transitionTimingFunction: 'ease-out'
 	        };
-	    }
-	    onClick(e) {
+	    };
+	    Koma.prototype.onClick = function (e) {
 	        dispatcher_1.Dispatcher.dispatch({
 	            actionType: actiontypes_1.ActionTypes.KomaClick,
 	            koma: this.props.koma,
 	        });
 	        e.stopPropagation();
-	    }
-	    render() {
+	    };
+	    Koma.prototype.render = function () {
 	        return (React.createElement("div", {onClick: this.onClick.bind(this), style: this.style()}, 
 	            React.createElement("img", {src: this.props.img})
 	        ));
+	    };
+	    return Koma;
+	}(React.Component));
+	var Tile = (function (_super) {
+	    __extends(Tile, _super);
+	    function Tile() {
+	        _super.apply(this, arguments);
 	    }
-	}
-	class Tile extends React.Component {
-	    style() {
+	    Tile.prototype.style = function () {
 	        return {
 	            position: 'absolute',
 	            left: this.props.pos.off_x,
@@ -122,60 +141,60 @@
 	            height: constants_1.Constants.MASU_H,
 	            backgroundColor: this.props.color,
 	        };
-	    }
-	    render() {
+	    };
+	    Tile.prototype.render = function () {
 	        return (React.createElement("div", {style: this.style()}));
-	    }
-	}
-	class Ban extends React.Component {
-	    constructor(props) {
-	        super(props);
+	    };
+	    return Tile;
+	}(React.Component));
+	var Ban = (function (_super) {
+	    __extends(Ban, _super);
+	    function Ban(props) {
+	        _super.call(this, props);
 	        this.state = {
 	            komas: [],
-	            selected: null,
-	            promoting: null
+	            selected: undefined,
+	            promoting: undefined
 	        };
 	    }
-	    events() {
+	    Ban.prototype.events = function () {
 	        return [
 	            { name: eventtypes_1.EventTypes.Move, handler: this.setState.bind(this) },
 	            { name: eventtypes_1.EventTypes.Select, handler: this.setState.bind(this) },
 	            { name: eventtypes_1.EventTypes.Promote, handler: this.setState.bind(this) },
 	        ];
-	    }
-	    style() {
+	    };
+	    Ban.prototype.style = function () {
 	        return {
 	            position: "absolute",
 	            left: "300px",
 	        };
-	    }
-	    componentDidMount() {
-	        this.events().forEach((o) => store_1.Store.eventEmmiter.on(o.name, o.handler));
-	    }
-	    componentWillUnmount() {
-	        this.events().forEach((o) => store_1.Store.eventEmmiter.removeListener(o.name, o.handler));
-	    }
-	    onClick(e) {
-	        const rect = document.getElementById('ban').getBoundingClientRect();
-	        const left = rect.left + window.pageXOffset;
-	        const top = rect.top + window.pageYOffset;
-	        const pos = position_1.Position.from_offsets(e.pageX - left, e.pageY - top);
+	    };
+	    Ban.prototype.componentDidMount = function () {
+	        this.events().forEach(function (o) { return store_1.Store.eventEmmiter.on(o.name, o.handler); });
+	    };
+	    Ban.prototype.componentWillUnmount = function () {
+	        this.events().forEach(function (o) { return store_1.Store.eventEmmiter.removeListener(o.name, o.handler); });
+	    };
+	    Ban.prototype.onClick = function (e) {
+	        var rect = document.getElementById('ban').getBoundingClientRect();
+	        var left = rect.left + window.pageXOffset;
+	        var top = rect.top + window.pageYOffset;
+	        var pos = position_1.Position.from_offsets(e.pageX - left, e.pageY - top);
 	        dispatcher_1.Dispatcher.dispatch({
 	            actionType: actiontypes_1.ActionTypes.MasuClick,
 	            pos: pos,
 	        });
-	    }
-	    render() {
-	        const handsPosWhite = Util.handsPos(this.state.komas, true);
-	        const handsPosBlack = Util.handsPos(this.state.komas, false);
-	        const pos = (koma) => {
+	    };
+	    Ban.prototype.render = function () {
+	        var _this = this;
+	        var pos = function (koma) {
 	            if (koma.isHand) {
+	                var o = Util.handsPos(_this.state.komas, koma);
 	                if (koma.isWhite) {
-	                    const o = handsPosWhite[koma.id];
 	                    return new position_1.Position(-1 - o.x, o.y);
 	                }
 	                else {
-	                    const o = handsPosBlack[koma.id];
 	                    return new position_1.Position(11 + o.x, 10 - o.y);
 	                }
 	            }
@@ -183,52 +202,55 @@
 	                return koma.pos;
 	            }
 	        };
-	        const komas = this.state.komas.map((koma) => (React.createElement(Koma, {koma: koma, pos: pos(koma), img: Util.image_src(koma.role, koma.isWhite, koma.isProm), key: koma.id})));
-	        const tile = this.state.selected
+	        var komas = this.state.komas.map(function (koma) { return (React.createElement(Koma, {koma: koma, pos: pos(koma), img: Util.image_src(koma.role, koma.isWhite, koma.isProm), key: koma.id})); });
+	        var tile = this.state.selected
 	            ? (React.createElement(Tile, {color: "black", pos: pos(this.state.selected)}))
 	            : null;
-	        const prom = this.state.promoting
+	        var prom = this.state.promoting
 	            ? (React.createElement(PromSelect, {pos: this.state.promoting.pos, koma: this.state.promoting.koma}))
 	            : null;
-	        const abs = { position: "absolute" };
+	        var abs = { position: "absolute" };
 	        return (React.createElement("div", {id: 'ban', style: this.style(), onClick: this.onClick}, 
 	            React.createElement("img", {src: 'img/ban/ban_kaya_a.png', style: abs}), 
 	            React.createElement("img", {src: 'img/masu/masu_nodot.png', style: abs}), 
 	            tile, 
 	            komas, 
 	            prom));
-	    }
-	}
-	class Util {
-	    static image_src(role, isWhite, isProm) {
-	        const sg = isWhite ? 'go_' : 'sen_';
-	        const n = isProm ? 'nari_' : '';
-	        return `img/koma/${sg}${n}${role}.png`;
-	    }
-	    static handsPos(komas, isWhite) {
-	        const order = (role) => (["ou", "hi", "kaku", "kin", "gin", "kei", "kyo", "fu"].findIndex((e) => e == role));
-	        const hand = komas.filter((koma) => (koma.isHand && koma.isWhite == isWhite)).sort((a, b) => (order(a.role) < order(b.role)));
-	        let pos = {};
-	        let roleIdx = {};
-	        let idx = 0;
-	        hand.forEach((koma) => {
-	            if (!roleIdx[koma.role]) {
-	                roleIdx[koma.role] = 0;
-	                idx += 1;
-	            }
-	            roleIdx[koma.role] += 1;
-	            pos[koma.id] = { y: idx, x: roleIdx[koma.role] };
-	        });
-	        return pos;
-	    }
-	}
-	const main = () => {
-	    store_1.Store.onReadyHandler = () => {
-	        react_dom_1.render(React.createElement(Ban, null), document.getElementById("root"));
 	    };
+	    return Ban;
+	}(React.Component));
+	var Util = (function () {
+	    function Util() {
+	    }
+	    Util.image_src = function (role, isWhite, isProm) {
+	        var sg = isWhite ? 'go_' : 'sen_';
+	        var n = isProm ? 'nari_' : '';
+	        return "img/koma/" + sg + n + role + ".png";
+	    };
+	    Util.handsPos = function (komas, koma) {
+	        var order = function (role) { return (["ou", "hi", "kaku", "kin", "gin", "kei", "kyo", "fu"].findIndex(function (e) { return e == role; })); };
+	        var hand = komas.filter(function (km) { return (km.isHand && km.isWhite == koma.isWhite); }).sort(function (a, b) { return (order(a.role) - order(b.role)); });
+	        var y = 0;
+	        var x = 0;
+	        var currnetRole = undefined;
+	        hand.some(function (km) {
+	            if (currnetRole != km.role) {
+	                y += 1;
+	                x = 0;
+	                currnetRole = km.role;
+	            }
+	            x += 1;
+	            return km.id == koma.id;
+	        });
+	        return { x: x, y: y };
+	    };
+	    return Util;
+	}());
+	var main = function () {
 	    store_1.Store.start();
+	    react_dom_1.render(React.createElement(Ban, null), document.getElementById("root"));
 	};
-	main();
+	document.addEventListener('DOMContentLoaded', main);
 
 
 /***/ },
@@ -21645,36 +21667,38 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const EventEmitter = __webpack_require__(176);
-	const engine_1 = __webpack_require__(177);
-	const eventtypes_1 = __webpack_require__(174);
-	const position_1 = __webpack_require__(179);
+	var EventEmitter = __webpack_require__(176);
+	var engine_1 = __webpack_require__(177);
+	var eventtypes_1 = __webpack_require__(174);
+	var position_1 = __webpack_require__(179);
 	var State;
 	(function (State) {
 	    State[State["Normal"] = 1] = "Normal";
 	    State[State["Moving"] = 2] = "Moving";
 	    State[State["Promoting"] = 3] = "Promoting";
 	})(State || (State = {}));
-	class Store_ {
-	    constructor() {
+	var Store_ = (function () {
+	    function Store_() {
 	        this.onUpdateHandler = this.onUpdateHandler.bind(this);
 	        this.eventEmmiter = new EventEmitter();
-	        this.selected = null;
+	        this.selected = undefined;
 	        this.state = State.Normal;
 	    }
-	    start() {
+	    Store_.prototype.start = function () {
 	        engine_1.Engine.onUpdateHandler = this.onUpdateHandler;
-	        engine_1.Engine.onReadyHandler = this.onReadyHandler;
 	        engine_1.Engine.start();
-	    }
-	    toNormal() {
-	        this.selected = null;
-	        this.promotingPos = null;
+	    };
+	    Store_.prototype.toNormal = function () {
+	        this.selected = undefined;
+	        this.promotingPos = undefined;
 	        this.eventEmmiter.emit(eventtypes_1.EventTypes.Select, { selected: null });
 	        this.eventEmmiter.emit(eventtypes_1.EventTypes.Promote, { promoting: null });
 	        this.state = State.Normal;
-	    }
-	    onMoving(pos) {
+	    };
+	    Store_.prototype.onMoving = function (pos) {
+	        if (!this.selected) {
+	            return;
+	        }
 	        if (this.selected.canPromote(pos.file)) {
 	            this.promotingPos = new position_1.Position(pos.rank, pos.file);
 	            this.eventEmmiter.emit(eventtypes_1.EventTypes.Promote, { promoting: { koma: this.selected, pos: this.promotingPos } });
@@ -21684,8 +21708,8 @@
 	            engine_1.Engine.move(this.selected, pos.rank, pos.file, false);
 	            this.toNormal();
 	        }
-	    }
-	    komaClick(koma) {
+	    };
+	    Store_.prototype.komaClick = function (koma) {
 	        if (!engine_1.Engine.canMove()) {
 	            return;
 	        }
@@ -21702,25 +21726,26 @@
 	        else if (this.state === State.Promoting) {
 	            this.toNormal();
 	        }
-	    }
-	    masuClick(pos) {
+	    };
+	    Store_.prototype.masuClick = function (pos) {
 	        if (this.state === State.Moving) {
 	            this.onMoving(pos);
 	        }
 	        else if (this.state === State.Promoting) {
 	            this.toNormal();
 	        }
-	    }
-	    promSelect(koma, isProm) {
-	        if (this.state === State.Promoting) {
+	    };
+	    Store_.prototype.promSelect = function (isProm) {
+	        if (this.selected && this.promotingPos && this.state === State.Promoting) {
 	            engine_1.Engine.move(this.selected, this.promotingPos.rank, this.promotingPos.file, isProm);
 	        }
 	        this.toNormal();
-	    }
-	    onUpdateHandler() {
+	    };
+	    Store_.prototype.onUpdateHandler = function () {
 	        this.eventEmmiter.emit(eventtypes_1.EventTypes.Move, { komas: engine_1.Engine.komas });
-	    }
-	}
+	    };
+	    return Store_;
+	}());
 	exports.Store = new Store_();
 
 
@@ -22037,9 +22062,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const constants_1 = __webpack_require__(172);
-	const komadata_1 = __webpack_require__(178);
-	const p_1 = __webpack_require__(180);
+	var constants_1 = __webpack_require__(172);
+	var komadata_1 = __webpack_require__(178);
+	var role_1 = __webpack_require__(180);
+	var p_1 = __webpack_require__(181);
 	var State;
 	(function (State) {
 	    State[State["Init"] = 1] = "Init";
@@ -22048,73 +22074,75 @@
 	    State[State["Moved"] = 4] = "Moved";
 	    State[State["Waiting"] = 5] = "Waiting";
 	})(State || (State = {}));
-	class Util {
-	    static perseRankStr(str) {
+	var Util = (function () {
+	    function Util() {
+	    }
+	    Util.perseRankStr = function (str) {
 	        return parseInt(str, 10);
-	    }
+	    };
 	    ;
-	    static perseFileStr(str) {
+	    Util.perseFileStr = function (str) {
 	        return str.charCodeAt(0) - "a".charCodeAt(0) + 1;
-	    }
+	    };
 	    ;
-	}
-	class Hand {
-	    constructor(isWhite) {
+	    return Util;
+	}());
+	var Hand = (function () {
+	    function Hand(isWhite) {
 	        this.isWhite = isWhite;
 	        this.komas = [];
 	    }
-	    add(koma) {
+	    Hand.prototype.add = function (koma) {
 	        koma.isWhite = this.isWhite;
 	        koma.isHand = true;
 	        koma.isProm = false;
 	        koma.setPos(0, 0);
 	        this.komas.push(koma);
-	    }
-	    remove(role) {
-	        for (let i = 0; i < this.komas.length; i++) {
+	    };
+	    Hand.prototype.remove = function (role) {
+	        for (var i = 0; i < this.komas.length; i++) {
 	            if (this.komas[i].role == role) {
-	                const koma = this.komas.splice(i, 1)[0];
+	                var koma = this.komas.splice(i, 1)[0];
 	                koma.isHand = false;
 	                return koma;
 	            }
 	        }
-	        return null;
-	    }
-	}
-	class Engine_ {
-	    constructor() {
+	        return undefined;
+	    };
+	    return Hand;
+	}());
+	var Engine_ = (function () {
+	    function Engine_() {
 	        this.handWhite = new Hand(true);
 	        this.handBlack = new Hand(false);
 	        this.response = "";
 	        this.state = State.Init;
 	        this.worker = new Worker("gnushogi.js");
 	    }
-	    start() {
-	        this.worker.onmessage = (e) => {
-	            // p(e.data);
-	            if (e.data.ready) {
-	                this.send("bd", "bd");
-	                this.state = State.ReadingBd;
-	            }
-	            else if (e.data.stdout) {
-	                this.interpret(e.data.stdout);
+	    Engine_.prototype.start = function () {
+	        var _this = this;
+	        this.send("bd", "bd");
+	        this.state = State.ReadingBd;
+	        this.worker.onmessage = function (e) {
+	            if (e.data.stdout) {
+	                _this.interpret(e.data.stdout);
 	            }
 	        };
-	    }
-	    get(rank, file) {
-	        return this.komas.find((koma) => { return koma.pos.rank == rank && koma.pos.file == file; });
-	    }
-	    canMove() {
+	    };
+	    Engine_.prototype.get = function (rank, file) {
+	        return this.komas.find(function (koma) { return koma.pos.rank == rank && koma.pos.file == file; });
+	    };
+	    Engine_.prototype.canMove = function () {
 	        return this.state == State.CanMove;
-	    }
-	    move(koma, rank, file, is_prom) {
+	    };
+	    Engine_.prototype.move = function (koma, rank, file, is_prom) {
 	        if (!this.canMove()) {
 	            return;
 	        }
-	        const yary = ["", "a", "b", "c", "d", "e", "f", "g", "h", "i"];
-	        let com = '';
+	        var yary = ["", "a", "b", "c", "d", "e", "f", "g", "h", "i"];
+	        var com = '';
 	        if (koma.isHand) {
-	            com = this.roleMapRev(koma.role).toUpperCase() + "*" + rank + yary[file];
+	            com = role_1.RoleUtil.role2roleEn(koma.role).toUpperCase() + "*" + rank + yary[file];
 	        }
 	        else {
 	            com = koma.pos.rank + yary[koma.pos.file] + rank + yary[file];
@@ -22124,11 +22152,10 @@
 	        }
 	        this.send(com, 'move');
 	        this.state = State.Moved;
-	    }
-	    onUpdateHandler() { }
-	    onReadyHandler() { }
-	    interpret(str) {
-	        let m;
+	    };
+	    Engine_.prototype.onUpdateHandler = function () { };
+	    Engine_.prototype.interpret = function (str) {
+	        var m;
 	        if (str.match(/^GNU Shogi /) || str === '\n') {
 	            return;
 	        }
@@ -22138,7 +22165,6 @@
 	            if (str.match(/^white/)) {
 	                this.komas = this.readBdResponse(this.response);
 	                this.response = "";
-	                this.onReadyHandler();
 	                this.state = State.CanMove;
 	                return this.onUpdateHandler();
 	            }
@@ -22170,47 +22196,50 @@
 	            this.state = State.CanMove;
 	            return this.onUpdateHandler();
 	        }
-	    }
-	    drop(m, isWhite) {
-	        const rank = Util.perseRankStr(m[2]);
-	        const file = Util.perseFileStr(m[3]);
-	        const role = this.roleMap(m[1]);
-	        const hand = isWhite ? this.handWhite : this.handBlack;
-	        const koma = hand.remove(role);
-	        koma.setPos(rank, file);
-	    }
-	    readBdResponse(res) {
-	        const komas = [];
-	        const yary = res.split(/\n/);
-	        let id = 1;
-	        for (let y = 1; y <= constants_1.Constants.FileSize; y++) {
-	            const line = yary[y].replace(/\s/g, ' _').replace(/\+/g, ' +');
-	            const xary = line.split(/\s/);
-	            for (let x = 1; x <= constants_1.Constants.RankSize; x++) {
-	                const role = xary[x];
-	                if (role !== '_-') {
-	                    const isWhite = !!role.match(/[A-Z]/);
-	                    const isProm = !!role.match(/\+/);
-	                    const koma = new komadata_1.KomaData(id, constants_1.Constants.RankSize - x + 1, y, this.roleMap(role[1]), isWhite, isProm, false);
+	    };
+	    Engine_.prototype.drop = function (m, isWhite) {
+	        var rank = Util.perseRankStr(m[2]);
+	        var file = Util.perseFileStr(m[3]);
+	        var role = role_1.RoleUtil.roleEn2role(m[1].toLowerCase());
+	        var hand = isWhite ? this.handWhite : this.handBlack;
+	        var koma = hand.remove(role);
+	        if (koma) {
+	            koma.setPos(rank, file);
+	        }
+	    };
+	    Engine_.prototype.readBdResponse = function (res) {
+	        var komas = [];
+	        var yary = res.split(/\n/);
+	        var id = 1;
+	        for (var y = 1; y <= constants_1.Constants.FileSize; y++) {
+	            var line = yary[y].replace(/\s/g, ' _').replace(/\+/g, ' +');
+	            var xary = line.split(/\s/);
+	            for (var x = 1; x <= constants_1.Constants.RankSize; x++) {
+	                var rolePart = xary[x];
+	                if (rolePart !== '_-') {
+	                    var role = role_1.RoleUtil.roleEn2role(rolePart[1].toLowerCase());
+	                    var isWhite = !!rolePart.match(/[A-Z]/);
+	                    var isProm = !!rolePart.match(/\+/);
+	                    var koma = new komadata_1.KomaData(id, constants_1.Constants.RankSize - x + 1, y, role, isWhite, isProm, false);
 	                    komas.push(koma);
 	                    id += 1;
 	                }
 	            }
 	        }
 	        return komas;
-	    }
-	    send(command, commandName) {
+	    };
+	    Engine_.prototype.send = function (command, commandName) {
 	        p_1.p(["send", command, commandName]);
 	        this.response = "";
-	        this.worker.postMessage(command + "\n");
-	    }
-	    afterMove(m, isWhite) {
-	        const srcRank = Util.perseRankStr(m[1]);
-	        const srcFile = Util.perseFileStr(m[2]);
-	        const dstRank = Util.perseRankStr(m[3]);
-	        const dstFile = Util.perseFileStr(m[4]);
-	        const srcKoma = this.get(srcRank, srcFile);
-	        const dstKoma = this.get(dstRank, dstFile);
+	        this.worker.postMessage({ stdin: command + "\n" });
+	    };
+	    Engine_.prototype.afterMove = function (m, isWhite) {
+	        var srcRank = Util.perseRankStr(m[1]);
+	        var srcFile = Util.perseFileStr(m[2]);
+	        var dstRank = Util.perseRankStr(m[3]);
+	        var dstFile = Util.perseFileStr(m[4]);
+	        var srcKoma = this.get(srcRank, srcFile);
+	        var dstKoma = this.get(dstRank, dstFile);
 	        if (dstKoma) {
 	            if (isWhite) {
 	                this.handWhite.add(dstKoma);
@@ -22219,38 +22248,15 @@
 	                this.handBlack.add(dstKoma);
 	            }
 	        }
-	        srcKoma.setPos(dstRank, dstFile);
-	        if (m[5] === '+') {
-	            srcKoma.isProm = true;
+	        if (srcKoma) {
+	            srcKoma.setPos(dstRank, dstFile);
+	            if (m[5] === '+') {
+	                srcKoma.isProm = true;
+	            }
 	        }
-	    }
-	    roleMap(role) {
-	        const map = {
-	            k: "ou",
-	            r: "hi",
-	            b: "kaku",
-	            g: "kin",
-	            s: "gin",
-	            n: "kei",
-	            l: "kyo",
-	            p: "fu",
-	        };
-	        return map[role.toLowerCase()];
-	    }
-	    roleMapRev(role) {
-	        const map = {
-	            ou: "k",
-	            hi: "r",
-	            kaku: "b",
-	            kin: "g",
-	            gin: "s",
-	            kei: "n",
-	            kyo: "l",
-	            fu: "p",
-	        };
-	        return map[role.toLowerCase()];
-	    }
-	}
+	    };
+	    return Engine_;
+	}());
 	exports.Engine = new Engine_();
 
 
@@ -22259,9 +22265,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const position_1 = __webpack_require__(179);
-	class KomaData {
-	    constructor(id, rank, file, role, isWhite, isProm, isHand) {
+	var position_1 = __webpack_require__(179);
+	var KomaData = (function () {
+	    function KomaData(id, rank, file, role, isWhite, isProm, isHand) {
 	        this.id = id;
 	        this.role = role;
 	        this.isWhite = isWhite;
@@ -22269,7 +22275,7 @@
 	        this.isHand = isHand;
 	        this.pos = new position_1.Position(rank, file);
 	    }
-	    canPromote(file) {
+	    KomaData.prototype.canPromote = function (file) {
 	        if (this.isProm || this.isHand || this.role === 'ou' || this.role === 'kin') {
 	            return false;
 	        }
@@ -22279,11 +22285,12 @@
 	        else {
 	            return this.pos.file <= 3 || file <= 3;
 	        }
-	    }
-	    setPos(rank, file) {
+	    };
+	    KomaData.prototype.setPos = function (rank, file) {
 	        this.pos = new position_1.Position(rank, file);
-	    }
-	}
+	    };
+	    return KomaData;
+	}());
 	exports.KomaData = KomaData;
 
 
@@ -22292,28 +22299,29 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const constants_1 = __webpack_require__(172);
-	class Position {
-	    constructor(rank, file) {
+	var constants_1 = __webpack_require__(172);
+	var Position = (function () {
+	    function Position(rank, file) {
 	        this.rank = rank;
 	        this.file = file;
 	        this.off_x = Position.rank2off_x(rank);
 	        this.off_y = Position.file2off_y(file);
 	    }
-	    static from_offsets(off_x, off_y) {
-	        const rank = this.off_x2rank(off_x);
-	        const file = this.off_y2file(off_y);
+	    Position.from_offsets = function (off_x, off_y) {
+	        var rank = this.off_x2rank(off_x);
+	        var file = this.off_y2file(off_y);
 	        return new Position(rank, file);
-	    }
-	    static off_x2x(off_x) { return (off_x - constants_1.Constants.BOARD_MERGIN) / constants_1.Constants.MASU_W; }
-	    static off_y2y(off_y) { return (off_y - constants_1.Constants.BOARD_MERGIN) / constants_1.Constants.MASU_H; }
-	    static off_x2rank(off_x) { return constants_1.Constants.RankSize - Math.floor(this.off_x2x(off_x)); }
-	    static off_y2file(off_y) { return Math.floor(this.off_y2y(off_y)) + 1; }
-	    static x2off_x(x) { return x * constants_1.Constants.MASU_W + constants_1.Constants.BOARD_MERGIN; }
-	    static y2off_y(y) { return y * constants_1.Constants.MASU_H + constants_1.Constants.BOARD_MERGIN; }
-	    static rank2off_x(rank) { return this.x2off_x(constants_1.Constants.RankSize - rank); }
-	    static file2off_y(file) { return this.y2off_y(file - 1); }
-	}
+	    };
+	    Position.off_x2x = function (off_x) { return (off_x - constants_1.Constants.BOARD_MERGIN) / constants_1.Constants.MASU_W; };
+	    Position.off_y2y = function (off_y) { return (off_y - constants_1.Constants.BOARD_MERGIN) / constants_1.Constants.MASU_H; };
+	    Position.off_x2rank = function (off_x) { return constants_1.Constants.RankSize - Math.floor(this.off_x2x(off_x)); };
+	    Position.off_y2file = function (off_y) { return Math.floor(this.off_y2y(off_y)) + 1; };
+	    Position.x2off_x = function (x) { return x * constants_1.Constants.MASU_W + constants_1.Constants.BOARD_MERGIN; };
+	    Position.y2off_y = function (y) { return y * constants_1.Constants.MASU_H + constants_1.Constants.BOARD_MERGIN; };
+	    Position.rank2off_x = function (rank) { return this.x2off_x(constants_1.Constants.RankSize - rank); };
+	    Position.file2off_y = function (file) { return this.y2off_y(file - 1); };
+	    return Position;
+	}());
 	exports.Position = Position;
 
 
@@ -22322,18 +22330,57 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	exports.p = console.log.bind(console);
+	var RoleUtil = (function () {
+	    function RoleUtil() {
+	    }
+	    RoleUtil.roleEn2role = function (roleEn) {
+	        var map = {
+	            k: "ou",
+	            r: "hi",
+	            b: "kaku",
+	            g: "kin",
+	            s: "gin",
+	            n: "kei",
+	            l: "kyo",
+	            p: "fu",
+	        };
+	        return map[roleEn];
+	    };
+	    RoleUtil.role2roleEn = function (role) {
+	        var map = {
+	            ou: "k",
+	            hi: "r",
+	            kaku: "b",
+	            kin: "g",
+	            gin: "s",
+	            kei: "n",
+	            kyo: "l",
+	            fu: "p",
+	        };
+	        return map[role];
+	    };
+	    return RoleUtil;
+	}());
+	exports.RoleUtil = RoleUtil;
 
 
 /***/ },
 /* 181 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.p = console.log.bind(console);
+
+
+/***/ },
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const store_1 = __webpack_require__(175);
-	const actiontypes_1 = __webpack_require__(173);
-	const Flux = __webpack_require__(182);
-	const dispatcher = new Flux.Dispatcher();
+	var store_1 = __webpack_require__(175);
+	var actiontypes_1 = __webpack_require__(173);
+	var Flux = __webpack_require__(183);
+	var dispatcher = new Flux.Dispatcher();
 	dispatcher.register(function (payload) {
 	    switch (payload.actionType) {
 	        case actiontypes_1.ActionTypes.KomaClick:
@@ -22341,14 +22388,14 @@
 	        case actiontypes_1.ActionTypes.MasuClick:
 	            return store_1.Store.masuClick(payload.pos);
 	        case actiontypes_1.ActionTypes.PromSelect:
-	            return store_1.Store.promSelect(payload.koma, payload.isProm);
+	            return store_1.Store.promSelect(payload.isProm);
 	    }
 	});
 	exports.Dispatcher = dispatcher;
 
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -22360,11 +22407,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Dispatcher = __webpack_require__(183);
+	module.exports.Dispatcher = __webpack_require__(184);
 
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -22495,7 +22542,6 @@
 	   */
 	
 	  Dispatcher.prototype.register = function register(callback) {
-	    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.register(...): Cannot register in the middle of a dispatch.') : invariant(false) : undefined;
 	    var id = _prefix + this._lastID++;
 	    this._callbacks[id] = callback;
 	    return id;
@@ -22506,7 +22552,6 @@
 	   */
 	
 	  Dispatcher.prototype.unregister = function unregister(id) {
-	    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): Cannot unregister in the middle of a dispatch.') : invariant(false) : undefined;
 	    !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
 	    delete this._callbacks[id];
 	  };
